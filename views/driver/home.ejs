@@ -1,0 +1,54 @@
+<%- include('navigation') -%>
+
+<div class="container">
+    <button id="start-driving" class="btn btn-outline-primary">Start Driving</button>
+    <button id="stop-driving" class="btn btn-outline-danger" style="display: none;">Stop Driving</button>
+</div>
+
+<script>
+    let intervalId;
+
+    $(document).ready(function () {
+        $('#start-driving').on('click', function () {
+            startSendingLocation();
+        });
+
+        $('#stop-driving').on('click', function () {
+            stopSendingLocation();
+        });
+
+        function startSendingLocation() {
+            $('#start-driving').hide();
+            $('#stop-driving').show();
+
+            intervalId = setInterval(sendLocationToServer, 5000);
+        }
+
+        function stopSendingLocation() {
+            $('#stop-driving').hide();
+            $('#start-driving').show();
+
+            clearInterval(intervalId);
+        }
+
+        function sendLocationToServer() {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                const { latitude, longitude } = position.coords;
+                $.ajax({
+                    type: "PUT",
+                    url: 'location',
+                    data: {
+                        lat: latitude,
+                        lng: longitude,
+                    },
+                    success: function(response) {
+                        console.log("Location sent to the server");
+                    },
+                    error: function(error) {
+                        console.error("Failed to send location:", error);
+                    }
+                });
+            });
+        }
+    });
+</script>

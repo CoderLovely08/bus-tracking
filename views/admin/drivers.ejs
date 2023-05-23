@@ -1,0 +1,206 @@
+<%- include('navigation') -%>
+
+    <!-- Modal -->
+    <div class="modal fade" id="addDriverModal" tabindex="-1" aria-labelledby="addDriverModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addDriverModalLabel">Add Driver</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body">
+                    <form id="addDriverForm">
+                        <div class="mb-3">
+                            <label for="driverFullName" class="form-label">Driver Full Name</label>
+                            <input type="text" class="form-control" id="driverFullName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="driverUserName" class="form-label">Driver User Name</label>
+                            <input type="text" class="form-control" id="driverUserName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="driverPassword" class="form-label">Driver Password</label>
+                            <input type="password" class="form-control" id="driverPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="driverPhone" class="form-label">Driver Contact Number</label>
+                            <input type="text" class="form-control" id="driverPhone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="driverGender" class="form-label">Driver Gender</label>
+                            <select class="form-control" id="driverGender" required>
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="busId" class="form-label">Assign Bus</label>
+                            <select class="form-control" name="select-bus" id="select-bus">
+                                <% for(let i=0; i< busData.length; i++) { %>
+                                    <option value="<%= busData[i].bus_id %>">
+                                        <%= busData[i].bus_name %>
+                                    </option>
+                                    <% } %>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Datatable CDN -->
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+    <script src="//cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.4.1/css/buttons.dataTables.min.css">
+    <script type="text/javascript" language="javascript"
+        src="https://cdn.datatables.net/buttons/1.4.1/js/dataTables.buttons.min.js"></script>
+
+
+    <!-- Button CDNs -->
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.1/js/buttons.flash.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.1/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.1/js/buttons.print.min.js"></script>
+
+    <div class="container">
+
+        <div class="row m-4">
+            <div id="" class="table-responsive dataTable ">
+                <div class="table table-bordered courseTable">
+                    <table id="driver-table" class="table-sm">
+                        <thead>
+                            <th>Driver ID</th>
+                            <th>Driver Full Name</th>
+                            <th>Driver User Name</th>
+                            <th>Driver Contact Number</th>
+                            <th>Assigned Bus Name & Model</th>
+                            <th>Assigned Bus Number</th>
+                            <th>Action
+                                <!-- Button to trigger the modal -->
+                                <button id="add-driver" type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#addDriverModal">
+                                    Add Driver
+                                </button>
+                            </th>
+
+                        </thead>
+                        <tbody>
+                            <% for(let i=0; i<driverData.length; i++) { %>
+                                <tr>
+                                    <td>
+                                        <%= driverData[i].driver_id %>
+                                    </td>
+                                    <td>
+                                        <%= driverData[i].driver_full_name %>
+                                    </td>
+                                    <td>
+                                        <%= driverData[i].driver_user_name %>
+                                    </td>
+                                    <td>
+                                        <%= driverData[i].driver_contact_number %>
+                                    </td>
+                                    <td>
+                                        <span><b>Name: </b></span>
+                                        <%= driverData[i].bus_name %>
+                                            <br>
+                                            <span><b>Model: </b></span>
+                                            <%= driverData[i].bus_model %>
+                                    </td>
+                                    <td>
+                                        <%= driverData[i].bus_number %>
+                                    </td>
+                                    <td>
+                                        <button id="update-driver-<%= driverData[i].driver_id %>"
+                                            class="updateDelete btn btn-success btn-sm"><i class="fa fa-pencil"
+                                                aria-hidden="true"></i></button>
+                                        <button id="delete-driver-<%= driverData[i].driver_id %>"
+                                            class="updateDelete btn btn-danger btn-sm"><i class="fa fa-trash"
+                                                aria-hidden="true"></i></button>
+                                    </td>
+                                </tr>
+                                <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Course datatable ends -->
+        </div>
+    </div>
+
+
+    <script>
+        $(document).ready(function () {
+
+            // User defined metods
+            function addLoadingSpinner() {
+                $('#loading-overlay').addClass('loading-overlay');
+                $('#spinner').addClass('spinner');
+            }
+
+            function removeLoadingSpinner() {
+                $('#loading-overlay').removeClass('loading-overlay');
+                $('#spinner').removeClass('spinner');
+            }
+
+
+            var table = $("#driver-table").DataTable();
+
+            $(document).on('click', '#add-driver', function () {
+                $('#addDriverModal').modal('toggle');
+            })
+
+            $('#addDriverForm').submit(function (event) {
+                event.preventDefault();
+
+                let driverUserName = $('#driverUserName').val().trim();
+                let driverPassword = $('#driverPassword').val().trim();
+                let driverFullName = $('#driverFullName').val().trim();
+                let driverPhone = $('#driverPhone').val().trim();
+                let driverGender = $('#driverGender').val().trim();
+                let busId = $('#select-bus option:selected').val();
+                addLoadingSpinner();
+                $.ajax({
+                    type: 'POST',
+                    url: '', // Specify the URL for handling the form submission
+                    data: {
+                        driverUserName: driverUserName,
+                        driverPassword: driverPassword,
+                        driverFullName: driverFullName,
+                        driverGender: driverGender,
+                        driverPhone: driverPhone,
+                        busId: busId
+                    },
+                    success: function (response) {
+                        if (response.statusCode == 0) {
+                            alert("Driver added successfully!");
+                            location.reload();
+                            // Perform any additional actions after successful submission
+                        } else if (response.statusCode == 1) {
+                            alert("Username already exists!");
+                        } else if (response.statusCode == 2) {
+                            alert("Unable to add driver details!");
+                        } else {
+                            alert("Network Error, try again later!");
+                        }
+                    },
+                    error: function (error) {
+                        alert("An unknown error has occurred!");
+                    },
+                    complete: function () {
+                        // Hide the loading overlay
+                        removeLoadingSpinner();
+                    }
+                });
+            });
+        });
+
+    </script>

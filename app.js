@@ -17,7 +17,7 @@ const driverRouter = require('./routes/driver')
 const userRouter = require('./routes/user')
 
 app.use('/admin', adminRouter);
-// app.use('/driver', driverRouter);
+app.use('/driver', driverRouter);
 // app.use('/user', userRouter);
 
 const oneDay = 1000 * 60 * 60 * 24;

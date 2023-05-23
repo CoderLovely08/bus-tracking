@@ -1,0 +1,87 @@
+<%- include('../admin/navigation') -%>
+
+<style>
+    #map {
+        height: 400px;
+        width: 100%;
+    }
+</style>
+<h1>Bus Tracking System - Map View</h1>
+<div class="container">
+    <div id="map"></div>
+</div>
+
+<script>
+    function initMap() {
+        var markers = []; // Store the markers on the map
+        var map; // Declare the map variable
+
+        function updateBusLocations() {
+            // Make an AJAX request to fetch the live bus locations from the server
+            $.ajax({
+                type: 'GET',
+                url: '/admin/get-live-status', // Replace with the actual server endpoint
+                success: function (response) {
+                    // Clear existing markers on the map
+                    removeMarkers();
+
+                    console.log(JSON.stringify(response));
+
+                    // Update the bus locations on the map
+                    response.forEach(function (location) {
+                        var marker = new google.maps.Marker({
+                            position: { lat: location.lat, lng: location.lng },
+                            map: map,
+                            title: 'Bus ' + location.busId
+                            // You can customize the marker icon here
+                            // icon: 'path/to/custom-marker-icon.png'
+                        });
+
+                        markers.push(marker);
+                    });
+
+                    // Update the map center based on the first bus location
+                    if (response.length > 0) {
+                        map.setCenter({ lat: response[0].lat, lng: response[0].lng });
+                    }
+                },
+                error: function (error) {
+                    console.log('Error retrieving live bus locations:', error);
+                }
+            });
+        }
+
+        function removeMarkers() {
+            // Clear all markers from the map
+            markers.forEach(function (marker) {
+                marker.setMap(null);
+            });
+            markers = [];
+        }
+
+        // Initialize the map with a default center
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 15,
+            center: { lat: 37.7833, lng: -122.4167 },
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+
+        // Call updateBusLocations initially to populate the map with the latest bus locations
+        updateBusLocations();
+
+        // Update bus locations every 10 seconds (adjust the interval as needed)
+        setInterval(updateBusLocations, 5000);
+    }
+
+    // Load the Google Maps API and initialize the map when the page has finished loading
+    function loadMapScript() {
+        var script = document.createElement('script');
+        script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBa6oIOta-5DkFn98ubdcI6FA4h76jsDeo&callback=initMap';
+        script.async = true;
+        script.defer = true;
+        document.body.appendChild(script);
+    }
+
+    // Replace 'YOUR_API_KEY' with your actual Google Maps API key
+    loadMapScript();
+</script>

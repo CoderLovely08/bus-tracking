@@ -1,0 +1,79 @@
+<%- include('../partials/header') -%>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="register-container card m-4 col-lg-6">
+                <h1 class="register-heading card-header">Admin Registration</h1>
+                <form class="register-form card-body" action="/admin/register" method="POST">
+                    <div class="form-floating mb-3">
+                        <label for="admin_user_name">Username</label>
+                        <input type="text" class="form-control" id="admin_user_name" name="admin_user_name"
+                            placeholder="Username" required>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <label for="admin_password">Password</label>
+                        <input type="password" class="form-control" id="admin_password" name="admin_password"
+                            placeholder="Password" required>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <label for="admin_full_name">Full Name</label>
+                        <input type="text" class="form-control" id="admin_full_name" name="admin_full_name"
+                            placeholder="Full Name" required>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <label for="admin_contact_number">Contact Number</label>
+                        <input type="text" class="form-control" id="admin_contact_number" name="admin_contact_number"
+                            placeholder="Contact Number" required>
+                    </div>
+                    <label for="admin_dob">Date of Birth</label>
+                    <div class="form-floating mb-3">
+                        <input type="date" class="form-control" id="admin_dob" name="admin_dob" required>
+                    </div>
+                    <div class="card-footer text-center">
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        $(document).ready(function () {
+            $('form').submit(function (event) {
+                event.preventDefault();
+
+                let username = $('#admin_user_name').val().trim();
+                let password = $('#admin_password').val().trim();
+                let fullname = $('#admin_full_name').val().trim();
+                let phone = $('#admin_contact_number').val().trim();
+                let dob = $('#admin_dob').val().trim();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '',
+                    data: {
+                        username: username,
+                        password: password,
+                        fullname: fullname,
+                        phone: phone,
+                        dob: dob,
+                    },
+                    success: function (resposne) {
+                        if (resposne.statusCode == 0) {
+                            alert("Admin Registered Succesully, they can login now!");
+                            location.reload();
+                        } else if (resposne.statusCode == 1) {
+                            alert("Unable to add register new admin!");
+                        } else {
+                            alert("Network error, try again later!");
+                        }
+                    },
+                    error: function (error) {
+                        alert("An unknown error has occurred!");
+                    }
+                })
+
+            })
+        })
+    </script>

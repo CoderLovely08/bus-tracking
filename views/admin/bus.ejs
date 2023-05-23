@@ -1,0 +1,187 @@
+<%- include('navigation') -%>
+
+    <!-- Modal -->
+    <div class="modal fade" id="addBusModal" tabindex="-1" aria-labelledby="addBusModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addBusModalLabel">Add Bus</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addBusForm">
+                        <div class="mb-3">
+                            <label for="busName" class="form-label">Bus Name</label>
+                            <input type="text" class="form-control" id="busName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="busNumber" class="form-label">Bus Number</label>
+                            <input type="text" class="form-control" id="busNumber" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="busModel" class="form-label">Bus Model</label>
+                            <input type="text" class="form-control" id="busModel" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="busOrigin" class="form-label">Bus Origin</label>
+                            <input type="text" class="form-control" id="busOrigin" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="busDestination" class="form-label">Bus Destination</label>
+                            <input type="text" class="form-control" id="busDestination" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Datatable CDN -->
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+    <script src="//cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.4.1/css/buttons.dataTables.min.css">
+    <script type="text/javascript" language="javascript"
+        src="https://cdn.datatables.net/buttons/1.4.1/js/dataTables.buttons.min.js"></script>
+
+
+    <!-- Button CDNs -->
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.1/js/buttons.flash.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.1/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.1/js/buttons.print.min.js"></script>
+
+    <div class="container">
+
+        <div class="row m-4">
+            <div id="" class="table-responsive dataTable ">
+                <div class="table table-bordered courseTable">
+                    <table id="bus-table" class="table-sm">
+                        <thead>
+                            <th>Bus ID</th>
+                            <th>Bus Name</th>
+                            <th>Bus Number</th>
+                            <th>Bus Model</th>
+                            <th>Bus Source</th>
+                            <th>Bus Destination</th>
+                            <th>Action
+                                <!-- Button to trigger the modal -->
+                                <button id="add-bus" type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#addBusModal">
+                                    Add Bus
+                                </button>
+                            </th>
+
+                        </thead>
+                        <tbody>
+                            <% for(let i=0; i<busData.length; i++) { %>
+                                <tr>
+                                    <td>
+                                        <%= busData[i].bus_id %>
+                                    </td>
+                                    <td>
+                                        <%= busData[i].bus_name %>
+                                    </td>
+                                    <td>
+                                        <%= busData[i].bus_number %>
+                                    </td>
+                                    <td>
+                                        <%= busData[i].bus_model %>
+                                    </td>
+                                    <td>
+                                        <%= busData[i].bus_origin %>
+                                    </td>
+                                    <td>
+                                        <%= busData[i].bus_destination %>
+                                    </td>
+                                    <td>
+                                        <button id="update-bus-<%= busData[i].bus_id %>"
+                                            class="updateDelete btn btn-success btn-sm"><i class="fa fa-pencil"
+                                                aria-hidden="true"></i></button>
+                                        <button id="delete-bus-<%= busData[i].bus_id %>"
+                                            class="updateDelete btn btn-danger btn-sm"><i class="fa fa-trash"
+                                                aria-hidden="true"></i></button>
+                                    </td>
+                                </tr>
+                                <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Course datatable ends -->
+        </div>
+    </div>
+
+
+    <script>
+        $(document).ready(function () {
+            // User defined metods
+            function addLoadingSpinner() {
+                $('#loading-overlay').addClass('loading-overlay');
+                $('#spinner').addClass('spinner');
+            }
+
+            function removeLoadingSpinner() {
+                $('#loading-overlay').removeClass('loading-overlay');
+                $('#spinner').removeClass('spinner');
+            }
+
+            var table = $("#bus-table").DataTable();
+
+            $('#addBusForm').submit(function (event) {
+                event.preventDefault();
+
+                let busName = $('#busName').val().trim();
+                let busNumber = $('#busNumber').val().trim();
+                let busModel = $('#busModel').val().trim();
+                let busOrigin = $('#busOrigin').val().trim();
+                let busDestination = $('#busDestination').val().trim();
+                
+                addLoadingSpinner();
+                
+                $.ajax({
+                    type: 'POST',
+                    url: '', // Specify the URL for handling the form submission
+                    data: {
+                        busName: busName,
+                        busNumber: busNumber,
+                        busModel: busModel,
+                        busOrigin: busOrigin,
+                        busDestination: busDestination,
+                    },
+                    success: function (response) {
+                        if (response.statusCode == 0) {
+                            alert("Bus added successfully!");
+                            location.reload();
+                            // Perform any additional actions after successful submission
+                        } else if (response.statusCode == 1) {
+                            alert("Bus with same number already exists!");
+                        } else if (response.statusCode == 2) {
+                            alert("Unable to add bus details!");
+                        } else {
+                            alert("Netowrk error, try again later!")
+                        }
+                    },
+                    error: function (error) {
+                        alert("An unknown error has occurred!");
+                    },
+                    complete: function () {
+                        // Hide the loading overlay
+                        removeLoadingSpinner();
+                    }
+                });
+            });
+
+            $(document).on('click', '#add-bus', function () {
+                $('#addBusModal').modal('toggle');
+            })
+
+        })
+
+    </script>
