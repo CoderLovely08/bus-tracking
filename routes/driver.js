@@ -42,10 +42,10 @@ router.route('/location')
         let lng = parseFloat(req.body.lng);
         const busId = 3; // Replace with the actual bus ID
 
-        let num = Math.random();
+        // let num = Math.random();
 
-        lat += num;
-        lng += num;
+        // lat += num;
+        // lng += num;
 
 
         try {

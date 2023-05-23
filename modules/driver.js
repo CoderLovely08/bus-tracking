@@ -13,7 +13,7 @@ const updateLiveLocation = async (busId, latitude, longitude) => {
         };        
 
         const { rowCount } = await pool.query(query);
-        console.log(latitude, longitude);
+
         if (rowCount == 1) {
             return 0;
         } else {
