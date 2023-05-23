@@ -1,0 +1,57 @@
+<%- include('../partials/header') -%>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="login-container card m-4 col-lg-6">
+                <h1 class="login-heading card-header">Admin Login</h1>
+                <form class="login-form card-body" action="/admin/login" method="POST">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Username"
+                            required>
+                        <label for="username">Username</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Password"
+                            required>
+                        <label for="password">Password</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Login</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        $(document).ready(function () {
+            $('form').submit(function (event) {
+                event.preventDefault();
+
+                let username = $('#username').val().trim();
+                let password = $('#password').val().trim();
+
+                $.ajax({
+                    type: "POST",
+                    url: '',
+                    data: {
+                        username: username,
+                        password: password
+                    },
+                    success: function (resposne) {
+                        if (resposne.success) {
+                            alert("Login successful!");
+                            window.location = '/';
+                        } else {
+                            alert("Invalid credentials");
+                        }
+                    },
+                    error: function (error) {
+                        alert("An error has occurred, try again later! ");
+                    }
+                })
+
+            })
+        })
+    </script>
