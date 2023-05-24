@@ -1,87 +1,198 @@
-<%- include('../admin/navigation') -%>
+<%- include('../partials/commonheader') -%>
 
-<style>
-    #map {
-        height: 400px;
-        width: 100%;
-    }
-</style>
-<h1>Bus Tracking System - Map View</h1>
-<div class="container">
-    <div id="map"></div>
-</div>
+    <%- include('../admin/navigation') -%>
 
-<script>
-    function initMap() {
-        var markers = []; // Store the markers on the map
-        var map; // Declare the map variable
+        <style>
+            #map {
+                height: 400px;
+                width: 100%;
+            }
 
-        function updateBusLocations() {
-            // Make an AJAX request to fetch the live bus locations from the server
-            $.ajax({
-                type: 'GET',
-                url: '/admin/get-live-status', // Replace with the actual server endpoint
-                success: function (response) {
-                    // Clear existing markers on the map
-                    removeMarkers();
+            h4 {
+                display: inline;
+            }
+        </style>
+        <div class="container">
+            <h1>Bus Tracking System - Map View</h1>
+            <div class="row">
+                <div id="map" class="col-lg-8 m-2 card"></div>
+                <div class="card m-2">
+                    <div class="card-header">
+                        <h3>
+                            Bus Details
+                        </h3>
+                    </div>
+                    <div class="card-title">
+                        <h4 class="px-4">Live Status</h4>
+                    </div>
+                    <div class="card-body">
+                        <% busDetails.forEach((bus)=> { %>
+                            <div class="bus-details mb-3">
+                                <h4><i class="fas fa-bus"></i>
+                                    <%= bus.bus_name %>
+                                        <% if (bus.isactive) { %>
+                                            <span class="badge badge-success mx-2"><i class="las la-circle"></i></span>
+                                            <% } else { %>
+                                                <span class="badge badge-danger mx-2"><i class="las la-circle"></i></span>
+                                                <% } %>
+                                </h4>
+                                <ul>
+                                    <li><strong>Bus ID:</strong>
+                                        <%= bus.bus_id %>
+                                    </li>
+                                    <li><strong>Bus Number:</strong>
+                                        <%= bus.bus_number %>
+                                    </li>
+                                    <li><strong>Bus Model:</strong>
+                                        <%= bus.bus_model %>
+                                    </li>
+                                    <li><strong>Bus Origin:</strong>
+                                        <%= bus.bus_origin %>
+                                    </li>
+                                    <li><strong>Bus Destination:</strong>
+                                        <%= bus.bus_destination %>
+                                    </li>
+                                </ul>
+                            </div>
+                            <% }); %>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                    console.log(JSON.stringify(response));
+        <script>
+            function initMap() {
+                var markers = []; // Store the markers on the map
+                var map; // Declare the map variable
 
-                    // Update the bus locations on the map
-                    response.forEach(function (location) {
-                        var marker = new google.maps.Marker({
-                            position: { lat: location.lat, lng: location.lng },
-                            map: map,
-                            title: 'Bus ' + location.busId
-                            // You can customize the marker icon here
-                            // icon: 'path/to/custom-marker-icon.png'
-                        });
+                function updateBusLocations() {
+                    // Make an AJAX request to fetch the live bus locations from the server
+                    $.ajax({
+                        type: 'GET',
+                        url: '/admin/get-live-status', // Replace with the actual server endpoint
+                        success: function (response) {
+                            var busLocations = response.busLocations; // Extract the bus location data
+                            var busDetails = response.busDetails; // Extract the bus details
 
-                        markers.push(marker);
+                            // Update the bus locations on the map
+                            busLocations.forEach(function (location) {
+                                // Find an existing marker for the bus ID
+                                var marker = markers.find(function (marker) {
+                                    return marker.busId === location.busId;
+                                });
+
+                                // If the marker doesn't exist, create a new one
+                                if (!marker) {
+                                    marker = new google.maps.Marker({
+                                        busId: location.busId,
+                                        map: map,
+                                        title: 'Bus ' + location.busId,
+                                        icon: '/static/images/bus-icon.png'
+                                        // You can customize the marker icon here
+                                    });
+
+                                    // Determine the bus status (active or inactive)
+                                    var busStatus = location.isActive ? 'Active' : 'Inactive';
+                                    // Create an info window and set its content
+                                    var infoWindow = new google.maps.InfoWindow({
+                                        content: 'Bus ' + location.busId + '<br>Status: ' + busStatus
+                                    });
+
+                                    // Attach an event listener to the marker to open the info window on click
+                                    marker.addListener('click', function () {
+                                        infoWindow.open(map, marker);
+                                    });
+
+                                    markers.push(marker);
+                                }
+
+                                // Update the marker position
+                                marker.setPosition({ lat: location.lat, lng: location.lng });
+                            });
+
+                            // Remove markers for buses that are no longer present
+                            markers.forEach(function (marker) {
+                                var isBusPresent = busLocations.some(function (location) {
+                                    return marker.busId === location.busId;
+                                });
+                                if (!isBusPresent) {
+                                    marker.setMap(null);
+                                } else {
+                                    // Update the marker status based on the received bus location data
+                                    var location = busLocations.find(function (location) {
+                                        return marker.busId === location.busId;
+                                    });
+                                    var busStatus = location.isActive ? 'Active' : 'Inactive';
+                                    marker.setTitle('Bus ' + location.busId + ' - ' + busStatus);
+                                }
+                            });
+
+                            // Update the bus details table
+                            updateBusDetailsTable(busDetails);
+
+                            // Center the map on the first bus location
+                            if (busLocations.length > 0) {
+                                map.setCenter({ lat: busLocations[0].lat, lng: busLocations[0].lng });
+                            }
+                        },
+                        error: function (error) {
+                            console.log('Error retrieving live bus locations:', error);
+                        }
                     });
-
-                    // Update the map center based on the first bus location
-                    if (response.length > 0) {
-                        map.setCenter({ lat: response[0].lat, lng: response[0].lng });
-                    }
-                },
-                error: function (error) {
-                    console.log('Error retrieving live bus locations:', error);
                 }
-            });
-        }
 
-        function removeMarkers() {
-            // Clear all markers from the map
-            markers.forEach(function (marker) {
-                marker.setMap(null);
-            });
-            markers = [];
-        }
+                // Function to update the bus details table
+                function updateBusDetailsTable(busDetails) {
+                    var tableBody = $('.card-body'); // Get the table body element
 
-        // Initialize the map with a default center
-        map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 15,
-            center: { lat: 37.7833, lng: -122.4167 },
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        });
+                    // Clear the table body
+                    tableBody.empty();
 
-        // Call updateBusLocations initially to populate the map with the latest bus locations
-        updateBusLocations();
+                    // Loop through the bus details and append rows to the table
+                    busDetails.forEach(function (bus) {
+                        var busStatusBadge = bus.isactive ? '<span class="badge badge-success mx-2"><i class="las la-circle"><i/></span>' : '<span class="badge badge-danger mx-2"><i class="las la-circle"><i/></span>';
 
-        // Update bus locations every 10 seconds (adjust the interval as needed)
-        setInterval(updateBusLocations, 5000);
-    }
+                        // Create the table row
+                        var row = $('<div class="bus-details mb-3">').append(
+                            $('<h4><i class="fas fa-bus"></i> ' + bus.bus_name + busStatusBadge + '</h4>&nbsp;'),
+                            $('<ul>').append(
+                                $('<li><strong>Bus ID:</strong> ' + bus.bus_id + '</li>'),
+                                $('<li><strong>Bus Number:</strong> ' + bus.bus_number + '</li>'),
+                                $('<li><strong>Bus Model:</strong> ' + bus.bus_model + '</li>'),
+                                $('<li><strong>Bus Origin:</strong> ' + bus.bus_origin + '</li>'),
+                                $('<li><strong>Bus Destination:</strong> ' + bus.bus_destination + '</li>')
+                            )
+                        );
 
-    // Load the Google Maps API and initialize the map when the page has finished loading
-    function loadMapScript() {
-        var script = document.createElement('script');
-        script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBa6oIOta-5DkFn98ubdcI6FA4h76jsDeo&callback=initMap';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-    }
+                        // Append the row to the table body
+                        tableBody.append(row);
+                    });
+                }
 
-    // Replace 'YOUR_API_KEY' with your actual Google Maps API key
-    loadMapScript();
-</script>
+                // Initialize the map with a default center
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 15,
+                    center: { lat: 37.7833, lng: -122.4167 },
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                });
+
+                // Call updateBusLocations initially to populate the map with the latest bus locations and details
+                updateBusLocations();
+
+                // Update bus locations and details every 10 seconds (adjust the interval as needed)
+                setInterval(updateBusLocations, 5000);
+            }
+
+            // Load the Google Maps API and initialize the map when the page has finished loading
+            function loadMapScript() {
+                var script = document.createElement('script');
+                script.src =
+                    'https://maps.googleapis.com/maps/api/js?key=AIzaSyBa6oIOta-5DkFn98ubdcI6FA4h76jsDeo&callback=initMap';
+                script.async = true;
+                script.defer = true;
+                document.body.appendChild(script);
+            }
+
+            loadMapScript();
+
+        </script>

@@ -26,11 +26,28 @@
 
     <script>
         $(document).ready(function () {
+            // --------------------------------------------------
+            // User Defined functions
+            // --------------------------------------------------
+            function addLoadingSpinner() {
+                $('#loading-overlay').addClass('loading-overlay');
+                $('#spinner').addClass('spinner');
+            }
+
+            function removeLoadingSpinner() {
+                $('#loading-overlay').removeClass('loading-overlay');
+                $('#spinner').removeClass('spinner');
+            }
+            // -----------------------------------------------
+            // -----------------------------------------------
+
             $('form').submit(function (event) {
                 event.preventDefault();
 
                 let username = $('#username').val().trim();
                 let password = $('#password').val().trim();
+                
+                addLoadingSpinner();
 
                 $.ajax({
                     type: "POST",
@@ -49,6 +66,9 @@
                     },
                     error: function (error) {
                         alert("An error has occurred, try again later! ");
+                    },
+                    complete: function (status) {
+                        removeLoadingSpinner();
                     }
                 })
 

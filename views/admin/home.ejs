@@ -1,3 +1,61 @@
+<%- include('../partials/commonheader') -%>
+
 <%- include('navigation') -%>
 
+<!-- admin-home.ejs -->
+<div class="bg"></div>
 
+<div class="container mt-5">
+  <h1 class="text-center">Welcome, <%= adminData.admin_full_name %></h1>
+  <hr>
+
+  <div class="row">
+    <div class="col-md-4 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-header">Profile</h5>
+          <div class="text-center mb-3">
+            <img src="/static/images/male.jpeg" alt="" class="rounded-circle m-2" style="width: 150px; height: 150px;">
+          </div>
+          <table class="table table-responsive">
+            <tbody>
+              <tr>
+                <th scope="row">Full Name</th>
+                <td><%= adminData.admin_full_name %></td>
+              </tr>
+              <tr>
+                <th scope="row">Username</th>
+                <td><%= adminData.admin_user_name %></td>
+              </tr>
+              <tr>
+                <th scope="row">Contact Number</th>
+                <td><%= adminData.admin_contact_number %></td>
+              </tr>
+              <tr>
+                <th scope="row">Date of Birth</th>
+                <td><%= new Date(adminData.admin_dob).toDateString() %></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-header">Options</h5>
+          <p class="card-title">List of available options</p>
+          <!-- Add a list of options the admin can do -->
+          <ul class="list-group">
+            <li class="list-group-item">Manage Drivers</li>
+            <li class="list-group-item">Manage Buses</li>
+            <li class="list-group-item">View Users</li>
+            <li class="list-group-item">View Live Status</li>
+            <!-- Add more options as needed -->
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -40,6 +40,23 @@
 
     <script>
         $(document).ready(function () {
+
+            // --------------------------------------------------
+            // User Defined functions
+            // --------------------------------------------------
+            function addLoadingSpinner() {
+                $('#loading-overlay').addClass('loading-overlay');
+                $('#spinner').addClass('spinner');
+            }
+
+            function removeLoadingSpinner() {
+                $('#loading-overlay').removeClass('loading-overlay');
+                $('#spinner').removeClass('spinner');
+            }
+            // -----------------------------------------------
+            // -----------------------------------------------
+
+
             $('form').submit(function (event) {
                 event.preventDefault();
 
@@ -49,6 +66,8 @@
                 let phone = $('#admin_contact_number').val().trim();
                 let dob = $('#admin_dob').val().trim();
 
+                addLoadingSpinner();
+                
                 $.ajax({
                     type: 'POST',
                     url: '',
@@ -71,6 +90,9 @@
                     },
                     error: function (error) {
                         alert("An unknown error has occurred!");
+                    },
+                    complete: function (status) {
+                        removeLoadingSpinner();
                     }
                 })
 

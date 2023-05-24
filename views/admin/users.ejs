@@ -1,3 +1,5 @@
+<%- include('../partials/commonheader') -%>
+
 <%- include('navigation') -%>
 
     <!-- Datatable CDN -->
@@ -70,5 +72,22 @@
     <script>
         $(document).ready(function () {
             var table = $("#user-table").DataTable();
+
+            // --------------------------------------------------
+            // User Defined functions
+            // --------------------------------------------------
+            function addLoadingSpinner() {
+                $('#loading-overlay').addClass('loading-overlay');
+                $('#spinner').addClass('spinner');
+            }
+
+            function removeLoadingSpinner() {
+                $('#loading-overlay').removeClass('loading-overlay');
+                $('#spinner').removeClass('spinner');
+            }
+            // -----------------------------------------------
+            // -----------------------------------------------
+
+
         })
     </script>

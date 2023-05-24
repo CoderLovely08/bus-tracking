@@ -34,8 +34,18 @@ CREATE TABLE BusInfo(
 CREATE TABLE RouteInfo(
 	route_id SERIAL PRIMARY KEY,
 	route_name varchar(40) not null,
-	bus_id int REFERENCES BusInfo(bus_id) ON DELETE CASCADE
 )
+```
+
+### 6. RouteMapping
+```sql
+create table RouteMapping(
+	route_id int,
+	bus_id int,
+	primary key (route_id, bus_id),
+	FOREIGN KEY (route_id) REFERENCES RouteInfo(route_id) ON DELETE CASCADE,
+	FOREIGN KEY (bus_id) REFERENCES BusInfo(bus_id) ON DELETE CASCADE
+) 
 ```
 
 ### 4. Driver Info

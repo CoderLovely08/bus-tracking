@@ -1,54 +1,216 @@
-<%- include('navigation') -%>
+<%- include('../partials/commonheader') -%>
+    <%- include('navigation') -%>
 
-<div class="container">
-    <button id="start-driving" class="btn btn-outline-primary">Start Driving</button>
-    <button id="stop-driving" class="btn btn-outline-danger" style="display: none;">Stop Driving</button>
-</div>
+        <div class="bg"></div>
 
-<script>
-    let intervalId;
 
-    $(document).ready(function () {
-        $('#start-driving').on('click', function () {
-            startSendingLocation();
-        });
+        <div class="container mt-5">
+            <div class="circular-buttons card my-3">
+                <div class="form-group card-header">
+                    <h4>
+                        Driving Control
+                    </h4>
+                </div>
+                <div class="card-body">
 
-        $('#stop-driving').on('click', function () {
-            stopSendingLocation();
-        });
+                    <button id="start-driving" class="btn btn-primary btn-circle" style="display: inline;">
+                        <i class="las la-play">Start</i>
+                    </button>
+                    <button id="stop-driving" class="btn btn-danger btn-circle" style="display: none;">
+                        <i class="las la-stop">Stop</i>
+                    </button>
+                    <button id="arrived-btn" class="btn btn-success btn-circle" style="display: none;">
+                        <i class="las la-check">Arrived</i>
+                    </button>
+                    <button id="traffic-btn" class="btn btn-warning btn-circle" style="display: none;">
+                        <i class="las la-exclamation-triangle">In Traffic</i>
+                    </button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="las la-user"></i>Driver Details</h3>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td><b>Driver ID:</b></td>
+                                        <td>
+                                            <%= driverData.driver_id %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Username:</b></td>
+                                        <td>
+                                            <%= driverData.driver_user_name %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Full Name:</b></td>
+                                        <td>
+                                            <%= driverData.driver_full_name %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Gender:</b></td>
+                                        <td>
+                                            <%= driverData.driver_gender %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Contact Number:</b></td>
+                                        <td>
+                                            <%= driverData.driver_contact_number %>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="las la-bus"></i> Bus Details</h3>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td><b>Bus ID:</b></td>
+                                        <td>
+                                            <%= driverData.bus_id %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Bus Name:</b></td>
+                                        <td>
+                                            <%= driverData.bus_name %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Bus Number:</b></td>
+                                        <td>
+                                            <%= driverData.bus_number %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Bus Model:</b></td>
+                                        <td>
+                                            <%= driverData.bus_model %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Bus Origin:</b></td>
+                                        <td>
+                                            <%= driverData.bus_origin %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Bus Destination:</b></td>
+                                        <td>
+                                            <%= driverData.bus_destination %>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        function startSendingLocation() {
-            $('#start-driving').hide();
-            $('#stop-driving').show();
+        <script>
+            let intervalId;
 
-            intervalId = setInterval(sendLocationToServer, 5000);
-        }
+            $(document).ready(function () {
+                $('#start-driving').on('click', function () {
+                    startSendingLocation();
+                });
 
-        function stopSendingLocation() {
-            $('#stop-driving').hide();
-            $('#start-driving').show();
+                $('#stop-driving').on('click', function () {
+                    stopSendingLocation();
+                });
 
-            clearInterval(intervalId);
-        }
+                $('#arrived-btn').on('click', function () {
+                    restartJourney();
+                    stopSendingLocation();
+                });
 
-        function sendLocationToServer() {
-            navigator.geolocation.getCurrentPosition(function (position) {
-                const { latitude, longitude } = position.coords;
-                $.ajax({
-                    type: "PUT",
-                    url: 'location',
-                    data: {
-                        lat: latitude,
-                        lng: longitude,
-                    },
-                    success: function(response) {
-                        console.log("Location sent to the server");
-                    },
-                    error: function(error) {
-                        console.error("Failed to send location:", error);
+                $('#traffic-btn').on('click', function () {
+                    $(this).toggleClass('in-traffic'); // Add custom class for styling
+
+                    if ($(this).hasClass('in-traffic')) {
+                        $(this).text('Resume Journey');
+                    } else {
+                        $(this).text('In Traffic');
                     }
                 });
+
+                function restartJourney() {
+                    $('#start-driving').show();
+                    $('#stop-driving').hide();
+                    $('#traffic-btn').hide();
+                    $('#arrived-btn').hide();
+                }
+
+
+                function startSendingLocation() {
+                    $('#start-driving').hide();
+                    $('#stop-driving').show();
+                    $('#arrived-btn').show();
+                    $('#traffic-btn').show();
+                    // return
+
+                    intervalId = setInterval(sendLocationToServer, 5000);
+                }
+
+                function stopSendingLocation() {
+                    $('#start-driving').show();
+                    $('#stop-driving').hide();
+                    $('#arrived-btn').hide();
+                    $('#traffic-btn').hide();
+                    // return
+
+                    $.ajax({
+                        type: "PUT",
+                        url: 'update-status',
+                        data: {
+                            isActive: false,
+                        },
+                        success: function (response) {
+                            console.log("Status sent to the server");
+                        },
+                        error: function (error) {
+                            console.error("Failed to send location:", error);
+                        }
+                    });
+
+                    clearInterval(intervalId);
+                }
+
+                function sendLocationToServer() {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        const { latitude, longitude } = position.coords;
+                        $.ajax({
+                            type: "PUT",
+                            url: 'location',
+                            data: {
+                                lat: latitude,
+                                lng: longitude,
+                                isActive: true,
+                            },
+                            success: function (response) {
+                                console.log("Location sent to the server");
+                            },
+                            error: function (error) {
+                                console.error("Failed to send location:", error);
+                            }
+                        });
+                    });
+                }
             });
-        }
-    });
-</script>
+        </script>

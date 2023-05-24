@@ -1,3 +1,5 @@
+<%- include('../partials/commonheader') -%>
+
 <%- include('navigation') -%>
 
     <!-- Modal -->
@@ -6,7 +8,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addDriverModalLabel">Add Driver</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
                     <form id="addDriverForm">
@@ -63,13 +65,6 @@
 
     <!-- Button CDNs -->
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.1/js/dataTables.buttons.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.1/js/buttons.flash.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.1/js/buttons.html5.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.1/js/buttons.print.min.js"></script>
 
     <div class="container">
 
@@ -119,9 +114,6 @@
                                         <%= driverData[i].bus_number %>
                                     </td>
                                     <td>
-                                        <button id="update-driver-<%= driverData[i].driver_id %>"
-                                            class="updateDelete btn btn-success btn-sm"><i class="fa fa-pencil"
-                                                aria-hidden="true"></i></button>
                                         <button id="delete-driver-<%= driverData[i].driver_id %>"
                                             class="updateDelete btn btn-danger btn-sm"><i class="fa fa-trash"
                                                 aria-hidden="true"></i></button>
@@ -140,7 +132,9 @@
     <script>
         $(document).ready(function () {
 
-            // User defined metods
+            /// --------------------------------------------------
+            // User Defined functions
+            // --------------------------------------------------
             function addLoadingSpinner() {
                 $('#loading-overlay').addClass('loading-overlay');
                 $('#spinner').addClass('spinner');
@@ -150,7 +144,8 @@
                 $('#loading-overlay').removeClass('loading-overlay');
                 $('#spinner').removeClass('spinner');
             }
-
+            // -----------------------------------------------
+            // -----------------------------------------------
 
             var table = $("#driver-table").DataTable();
 
@@ -167,7 +162,9 @@
                 let driverPhone = $('#driverPhone').val().trim();
                 let driverGender = $('#driverGender').val().trim();
                 let busId = $('#select-bus option:selected').val();
+                
                 addLoadingSpinner();
+
                 $.ajax({
                     type: 'POST',
                     url: '', // Specify the URL for handling the form submission
@@ -204,3 +201,5 @@
         });
 
     </script>
+
+    <%- include('../partials/footer') -%>

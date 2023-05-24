@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bus Route Showcase</title>
+    <!-- <link rel="stylesheet" type="text/css" href="styles.css"> -->
+    <style>
+        .container {
+            text-align: center;
+            padding-top: 50px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #busRoute {
+            width: 800px;
+            height: 400px;
+            background-color: #f2f2f2;
+        }
+
+        #routePath {
+            fill: none;
+            stroke: #333;
+            stroke-width: 2px;
+            transition: stroke-dashoffset 1s ease-in-out;
+        }
+
+        .busStop {
+            fill: #333;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .busStop:hover {
+            transform: scale(1.5);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Bus Route Showcase</h1>
+        <svg id="busRoute" viewBox="0 0 800 400">
+            <path id="routePath" d="M100 200 L300 100 L500 200 L700 100" />
+            <circle class="busStop" cx="100" cy="200" r="8" />
+            <circle class="busStop" cx="300" cy="100" r="8" />
+            <circle class="busStop" cx="500" cy="200" r="8" />
+            <circle class="busStop" cx="700" cy="100" r="8" />
+        </svg>
+    </div>
+
+    <script>
+        // Get the path and stops elements
+        const routePath = document.getElementById("routePath");
+        const busStops = document.getElementsByClassName("busStop");
+
+        // Calculate the length of the path
+        const pathLength = routePath.getTotalLength();
+
+        // Set the dash array and offset for the path
+        routePath.style.strokeDasharray = pathLength;
+        routePath.style.strokeDashoffset = pathLength;
+
+        // Animate the path and stops on page load
+        window.addEventListener("load", () => {
+            routePath.style.strokeDashoffset = "0";
+
+            for (let i = 0; i < busStops.length; i++) {
+                setTimeout(() => {
+                    busStops[i].style.transform = "scale(1)";
+                }, i * 500);
+            }
+        });
+
+    </script>
+</body>
+
+</html>

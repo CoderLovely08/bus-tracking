@@ -1,0 +1,208 @@
+<%- include('../partials/commonheader') -%>
+
+    <%- include('navigation') -%>
+
+        <!-- Add route modal -->
+        <div class="modal fade" id="add-route-modal" tabindex="-1" role="dialog" aria-labelledby="add-route-modal-title"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form>
+
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="add-route-modal-title">Add Route</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="route-name">Route Name</label>
+                                <input type="text" class="form-control" id="route-name" placeholder="City Center"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" id="save-route-btn">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Update Route modal -->
+        <div class="modal fade" id="update-route-modal" tabindex="-1" role="dialog"
+            aria-labelledby="update-route-modal-title" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form>
+
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="update-route-modal-title">Add Route</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="route-name">Route Name</label>
+                                <input type="text" class="form-control" id="update-route-name" placeholder="City Center"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" id="update-route-btn">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Datatable CDN -->
+        <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+        <script src="//cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+        <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.4.1/css/buttons.dataTables.min.css">
+        <script type="text/javascript" language="javascript"
+            src="https://cdn.datatables.net/buttons/1.4.1/js/dataTables.buttons.min.js"></script>
+
+
+        <!-- Button CDNs -->
+        <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+
+        <div class="container">
+
+            <div class="row m-4">
+                <div id="" class="table-responsive dataTable ">
+                    <div class="table table-bordered courseTable">
+                        <table id="route-table" class="table-sm">
+                            <thead>
+                                <th>Route ID</th>
+                                <th>Route Name</th>
+                                <th>Action
+                                    <button id="add-route-btn" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#add-route-modal">Add Route</button>
+                                </th>
+
+                            </thead>
+                            <tbody>
+                                <% for(let i=0; i<routeData.length; i++) { %>
+                                    <tr>
+                                        <td>
+                                            <%= routeData[i].route_id %>
+                                        </td>
+                                        <td>
+                                            <%= routeData[i].route_name %>
+                                        </td>
+                                        <td>
+                                            <button id="delete-route-<%= routeData[i].route_id %>"
+                                                class="updateDelete btn btn-danger btn-sm"><i class="fa fa-trash"
+                                                    aria-hidden="true"></i></button>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Course datatable ends -->
+            </div>
+        </div>
+
+
+        <script>
+            $(document).ready(function () {
+                var table = $("#route-table").DataTable();
+
+                // --------------------------------------------------
+                // User Defined functions
+                // --------------------------------------------------
+                function addLoadingSpinner() {
+                    $('#loading-overlay').addClass('loading-overlay');
+                    $('#spinner').addClass('spinner');
+                }
+
+                function removeLoadingSpinner() {
+                    $('#loading-overlay').removeClass('loading-overlay');
+                    $('#spinner').removeClass('spinner');
+                }
+                // -----------------------------------------------
+                // -----------------------------------------------
+
+                $('form').submit(function (event) {
+                    event.preventDefault();
+
+
+                    let routeName = $('#route-name').val().trim();
+                    let confirmOption = confirm("Are you sure to add a new route?")
+                    if (confirmOption) {
+
+                        addLoadingSpinner();
+                        $.ajax({
+
+                            type: 'POST',
+                            url: '',
+                            data: {
+                                routeName: routeName
+                            },
+                            success: function (response) {
+                                if (response.statusCode == 0) {
+                                    alert("Route added successfully!");
+                                    location.reload();
+                                } else if (response.statusCode == 1) {
+                                    alert("Route already exists!");
+                                } else {
+                                    alert("Unable to add new route!");
+                                }
+                            },
+                            error: function (error) {
+                                alert("An error has occured!");
+                            },
+                            complete: function (status) {
+                                removeLoadingSpinner();
+                            }
+
+                        })
+                    }
+                })
+
+
+                // Delete / Update
+
+                $(document).on('click', '.updateDelete', function () {
+                    let itemId = $(this).attr('id').split('-');
+                    let operationType = itemId[0];
+                    if (operationType.includes('delete')) {
+                        let confirmOption = confirm("Are you sure to delete this route?")
+                        if (confirmOption) {
+                            addLoadingSpinner();
+                            $.ajax({
+                                type: 'DELETE',
+                                url: '',
+                                data: {
+                                    itemId: itemId[2],
+                                },
+                                success: function (response) {
+                                    if (response.statusCode == 0) {
+                                        alert("Route Deleted successully");
+                                        location.reload();
+                                    } else if (response.statusCode == 1) {
+                                        alert("Unable to delete route!");
+                                    }
+                                },
+                                error: function (error) {
+                                    alert("An error has occured!");
+                                },
+                                complete: function (status) {
+                                    removeLoadingSpinner();
+                                }
+                            })
+                        }
+                    }
+                })
+
+            })
+        </script>
