@@ -70,13 +70,13 @@
             justify-content: space-between;
         }
 
+        .flex label {
+            width: 50%;
+        }
+
         .form label {
             position: relative;
         }
-        
-        /* #gender-label{
-            width: 200px;
-        } */
 
         .form label .input {
             width: 100%;
@@ -154,19 +154,17 @@
 
                     <div class="flex">
                         <!-- Gender -->
-                        <label id="gender-label">
-                            <select id="gender" required="" class="input">
+                        <label>
+                            <select id="gender" required="" class="form-control">
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
                                 <option value="Other">Other</option>
                             </select>
-                            <span>Gender</span>
                         </label>
 
                         <!-- Date of Birth -->
                         <label>
-                            <input id="dob" required="" placeholder="" type="date" class="input">
-                            <span>Date of Birth</span>
+                            <input id="dob" required="" placeholder="" type="date" class="form-control">
                         </label>
                     </div>
 
