@@ -1,83 +1,98 @@
 <%- include('../partials/commonheader') -%>
 
-<%- include('navigation') -%>
+  <%- include('navigation') -%>
 
-<!-- admin-home.ejs -->
-<div class="bg"></div>
+    <!-- admin-home.ejs -->
+    <div class="bg"></div>
 
 
-<div class="container mt-5">
-  <div class="jumbotron">
-    <h1>Bus Tracking System</h1>
-    <p>Track your buses in real-time and enjoy convenient and efficient transportation.</p>
-    
-    <h2>Features:</h2>
-    <ul>
-      <li><strong>Real-Time Bus Tracking:</strong> Keep an eye on the exact location of your bus in real-time.</li>
-      <li><strong>Estimated Arrival Times:</strong> Get accurate estimates of when your bus will arrive at your stop.</li>
-      <li><strong>Live Updates:</strong> Receive live updates about delays, diversions, and other important information.</li>
-      <li><strong>Route Maps:</strong> Access detailed route maps to plan your journey more effectively.</li>
-      <li><strong>Alert Notifications:</strong> Receive alerts via SMS or mobile app notifications for any changes or disruptions to your bus service.</li>
-      <li><strong>User-Friendly Interface:</strong> Enjoy an intuitive and easy-to-use interface for seamless navigation and interaction.</li>
-      <li><strong>Multi-Platform Support:</strong> Access the bus tracking system from your smartphone, tablet, or computer.</li>
-      <li><strong>Favorite Stops:</strong> Save your favorite stops for quick and easy access to their bus information.</li>
-    </ul>
-    
-    <p>With our bus tracking system, you can make your daily commute more efficient and plan your journey with confidence. Experience the convenience and reliability of our advanced tracking technology today!</p>
-    
-    <a href="#" class="btn btn-primary">Learn More</a>
-  </div>
-  
-  <h1 class="text-center">Welcome, <%= adminData.admin_full_name %></h1>
-  <hr>
+    <div class="container mt-5">
 
-  <div class="row">
-    <div class="col-md-4 mb-4">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-header">Profile</h5>
-          <div class="text-center mb-3">
-            <img src="/static/images/male.jpeg" alt="" class="rounded-circle m-2" style="width: 150px; height: 150px;">
+      <div class="alert alert-primary" role="alert">
+        <h1 class="text-center"> Welcome, <%= adminData.admin_full_name %> </h1>
+        <hr>
+      </div>
+
+      <div class="jumbotron">
+        <h1>Bus Tracking System</h1>
+        <p>Track your buses in real-time and enjoy convenient and efficient transportation.</p>
+
+        <h2>Features:</h2>
+        <ul>
+          <li><strong>Real-Time Bus Tracking:</strong> Keep an eye on the exact location of your bus in
+            real-time.</li>
+          <li><strong>Live Updates:</strong> Receive live updates about delays, diversions, and other
+            important information.</li>
+          <li><strong>Route Maps:</strong> Access detailed route maps to plan your journey more effectively.
+          </li>
+          <li><strong>User-Friendly Interface:</strong> Enjoy an intuitive and easy-to-use interface for
+            seamless navigation and interaction.</li>
+          <li><strong>Multi-Platform Support:</strong> Access the bus tracking system from your smartphone,
+            tablet, or computer.</li>
+        </ul>
+
+        <p>With our bus tracking system, you can make your daily commute more efficient and plan your journey
+          with confidence. Experience the convenience and reliability of our advanced tracking technology
+          today!</p>
+
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-header">Profile</h5>
+              <div class="text-center mb-3">
+                <img src="/static/images/male.jpeg" alt="" class="rounded-circle m-2"
+                  style="width: 150px; height: 150px;">
+              </div>
+              <table class="table table-responsive">
+                <tbody>
+                  <tr>
+                    <th scope="row">Full Name</th>
+                    <td>
+                      <%= adminData.admin_full_name %>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Username</th>
+                    <td>
+                      <%= adminData.admin_user_name %>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Contact Number</th>
+                    <td>
+                      <%= adminData.admin_contact_number %>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Date of Birth</th>
+                    <td>
+                      <%= new Date(adminData.admin_dob).toDateString() %>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-          <table class="table table-responsive">
-            <tbody>
-              <tr>
-                <th scope="row">Full Name</th>
-                <td><%= adminData.admin_full_name %></td>
-              </tr>
-              <tr>
-                <th scope="row">Username</th>
-                <td><%= adminData.admin_user_name %></td>
-              </tr>
-              <tr>
-                <th scope="row">Contact Number</th>
-                <td><%= adminData.admin_contact_number %></td>
-              </tr>
-              <tr>
-                <th scope="row">Date of Birth</th>
-                <td><%= new Date(adminData.admin_dob).toDateString() %></td>
-              </tr>
-            </tbody>
-          </table>
         </div>
-      </div>
-    </div>
 
-    <div class="col-md-8">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-header">Options</h5>
-          <p class="card-title">List of available options</p>
-          <!-- Add a list of options the admin can do -->
-          <ul class="list-group">
-            <li class="list-group-item">Manage Drivers</li>
-            <li class="list-group-item">Manage Buses</li>
-            <li class="list-group-item">View Users</li>
-            <li class="list-group-item">View Live Status</li>
-            <!-- Add more options as needed -->
-          </ul>
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-header">Options</h5>
+              <p class="card-title">List of available options</p>
+              <!-- Add a list of options the admin can do -->
+              <ul class="list-group">
+                <li class="list-group-item">Manage Drivers</li>
+                <li class="list-group-item">Manage Buses</li>
+                <li class="list-group-item">View Users</li>
+                <li class="list-group-item">View Live Status</li>
+                <!-- Add more options as needed -->
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</div>

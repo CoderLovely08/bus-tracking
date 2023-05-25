@@ -1,37 +1,55 @@
 <%- include('../partials/commonheader') -%>
     <%- include('navigation') -%>
 
-        <div class="bg"></div>
-
-
         <div class="container mt-5">
             <div class="circular-buttons card my-3">
                 <div class="form-group card-header">
-                    <h4>
-                        Driving Control
-                    </h4>
+                    <h4>Driving Controls</h4>
                 </div>
                 <div class="card-body">
-
                     <button id="start-driving" class="btn btn-primary btn-circle" style="display: inline;">
-                        <i class="las la-play">Start</i>
+                        <i class="las la-play"></i> Start
                     </button>
                     <button id="stop-driving" class="btn btn-danger btn-circle" style="display: none;">
-                        <i class="las la-stop">Stop</i>
+                        <i class="las la-stop"></i> Stop
                     </button>
                     <button id="arrived-btn" class="btn btn-success btn-circle" style="display: none;">
-                        <i class="las la-check">Arrived</i>
+                        <i class="las la-check"></i> Arrived
                     </button>
                     <button id="traffic-btn" class="btn btn-warning btn-circle" style="display: none;">
-                        <i class="las la-exclamation-triangle">In Traffic</i>
+                        <i class="las la-exclamation-triangle"></i> In Traffic
                     </button>
+
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3><i class="las la-info-circle"></i> Instructions</h3>
+                                </div>
+                                <div class="card-body">
+                                    <ul>
+                                        <li>Click the <b>Start</b> button to begin driving the bus.</li>
+                                        <li>If you encounter any traffic, click the <b>In Traffic</b> button to indicate
+                                            the
+                                            delay.</li>
+                                        <li>When you reach the destination, click the <b>Arrived</b> button to notify
+                                            the
+                                            completion of the trip.</li>
+                                        <li>If needed, you can click the <b>Stop</b> button to pause or end the driving
+                                            session.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6 col-sm-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3><i class="las la-user"></i>Driver Details</h3>
+                            <h3><i class="las la-user"></i> Driver Details</h3>
                         </div>
                         <div class="card-body">
                             <table class="table">
@@ -121,7 +139,127 @@
                     </div>
                 </div>
             </div>
+
         </div>
+
+        <!-- <div class="container mt-5">
+            <div class="circular-buttons card my-3">
+                <div class="form-group card-header">
+                    <h4>
+                        Driving Control
+                    </h4>
+                </div>
+                <div class="card-body">
+
+                    <button id="start-driving" class="btn btn-primary btn-circle" style="display: inline;">
+                        <i class="las la-play">Start</i>
+                    </button>
+                    <button id="stop-driving" class="btn btn-danger btn-circle" style="display: none;">
+                        <i class="las la-stop">Stop</i>
+                    </button>
+                    <button id="arrived-btn" class="btn btn-success btn-circle" style="display: none;">
+                        <i class="las la-check">Arrived</i>
+                    </button>
+                    <button id="traffic-btn" class="btn btn-warning btn-circle" style="display: none;">
+                        <i class="las la-exclamation-triangle">In Traffic</i>
+                    </button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="las la-user"></i>Driver Details</h3>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td><b>Driver ID:</b></td>
+                                        <td>
+                                            <%= driverData.driver_id %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Username:</b></td>
+                                        <td>
+                                            <%= driverData.driver_user_name %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Full Name:</b></td>
+                                        <td>
+                                            <%= driverData.driver_full_name %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Gender:</b></td>
+                                        <td>
+                                            <%= driverData.driver_gender %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Contact Number:</b></td>
+                                        <td>
+                                            <%= driverData.driver_contact_number %>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12 my-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="las la-bus"></i> Bus Details</h3>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td><b>Bus ID:</b></td>
+                                        <td>
+                                            <%= driverData.bus_id %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Bus Name:</b></td>
+                                        <td>
+                                            <%= driverData.bus_name %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Bus Number:</b></td>
+                                        <td>
+                                            <%= driverData.bus_number %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Bus Model:</b></td>
+                                        <td>
+                                            <%= driverData.bus_model %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Bus Origin:</b></td>
+                                        <td>
+                                            <%= driverData.bus_origin %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Bus Destination:</b></td>
+                                        <td>
+                                            <%= driverData.bus_destination %>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> -->
 
         <script>
             let intervalId;
@@ -177,7 +315,7 @@
 
                     $.ajax({
                         type: "PUT",
-                        url: 'update-status',
+                        url: '/driver/update-status',
                         data: {
                             isActive: false,
                         },
@@ -197,7 +335,7 @@
                         const { latitude, longitude } = position.coords;
                         $.ajax({
                             type: "PUT",
-                            url: 'location',
+                            url: '/driver/location',
                             data: {
                                 lat: latitude,
                                 lng: longitude,

@@ -31,7 +31,8 @@ router.route('/login')
         const { email, pass } = req.body;
 
         const loginStatus = await userModule.checkValidUserLogin(email, pass);
-
+        req.session.usertype = 'User'
+        
         res.send({ statusCode: loginStatus });
     })
 

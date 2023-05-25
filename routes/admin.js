@@ -41,6 +41,7 @@ router.route('/login')
             req.session.isAdminAuthenticated = true;
             req.session.adminId = rows[0].admin_id;
             req.session.adminFullName = rows[0].admin_full_name;
+            req.session.usertype = 'Admin'
 
             res.send({ success: true });
         }

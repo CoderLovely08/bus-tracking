@@ -22,6 +22,7 @@ app.use(session({
 const adminRouter = require('./routes/admin')
 const driverRouter = require('./routes/driver')
 const userRouter = require('./routes/user')
+const apiRouter = require('./routes/api')
 
 
 app.get('/', (req, res) => {
@@ -36,6 +37,7 @@ app.get('/', (req, res) => {
     }
 })
 
+app.use('/api', apiRouter);
 app.use('/admin', adminRouter);
 app.use('/driver', driverRouter);
 app.use('/user', userRouter);

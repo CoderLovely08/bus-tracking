@@ -1,6 +1,14 @@
 <%- include('../partials/commonheader') -%>
 
+
+<% if( locals.userType.includes('Admin')) { %>
     <%- include('../admin/navigation') -%>
+<% } else if(locals.userType.includes('Driver')) { %>
+    <%- include('../driver/navigation') -%>
+<% } else if(locals.userType.includes('User')) { %>
+    <%- include('../user/navigation') -%>
+<% } %>
+
 
         <style>
             #map {
@@ -13,7 +21,9 @@
             }
         </style>
         <div class="container">
-            <h1>Bus Tracking System - Map View</h1>
+            <div class="alert alert-primary" role="alert">
+                <h1>Bus Tracking System - Map View</h1>
+            </div>
             <div class="row">
                 <div id="map" class="col-lg-8 m-2 card"></div>
                 <div class="card m-2">
@@ -33,7 +43,8 @@
                                         <% if (bus.isactive) { %>
                                             <span class="badge badge-success mx-2"><i class="las la-circle"></i></span>
                                             <% } else { %>
-                                                <span class="badge badge-danger mx-2"><i class="las la-circle"></i></span>
+                                                <span class="badge badge-danger mx-2"><i
+                                                        class="las la-circle"></i></span>
                                                 <% } %>
                                 </h4>
                                 <ul>
@@ -69,7 +80,7 @@
                     // Make an AJAX request to fetch the live bus locations from the server
                     $.ajax({
                         type: 'GET',
-                        url: '/admin/get-live-status', // Replace with the actual server endpoint
+                        url: '/api/get-live-status', // Replace with the actual server endpoint
                         success: function (response) {
                             var busLocations = response.busLocations; // Extract the bus location data
                             var busDetails = response.busDetails; // Extract the bus details

@@ -46,6 +46,7 @@ router.route('/login')
                 req.session.driverId = rows[0].driver_id;
                 req.session.driverFullName = rows[0].driver_full_name;
                 req.session.busId = rows[0].bus_id;
+                req.session.usertype = 'Driver'
 
                 res.send({ success: true });
             } else {
