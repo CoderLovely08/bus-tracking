@@ -29,23 +29,15 @@
                 <div class="card m-2">
                     <div class="card-header">
                         <h3>
-                            Bus Details
+                            Bus Live Status
                         </h3>
-                    </div>
-                    <div class="card-title">
-                        <h4 class="px-4">Live Status</h4>
                     </div>
                     <div class="card-body">
                         <% busDetails.forEach((bus)=> { %>
                             <div class="bus-details mb-3">
                                 <h4><i class="fas fa-bus"></i>
                                     <%= bus.bus_name %>
-                                        <% if (bus.isactive) { %>
-                                            <span class="badge badge-success mx-2"><i class="las la-circle"></i></span>
-                                            <% } else { %>
-                                                <span class="badge badge-danger mx-2"><i
-                                                        class="las la-circle"></i></span>
-                                                <% } %>
+                                    <span class="pulse-icon <%= bus.status %>"></span>
                                 </h4>
                                 <ul>
                                     <li><strong>Bus ID:</strong>
@@ -161,11 +153,12 @@
 
                     // Loop through the bus details and append rows to the table
                     busDetails.forEach(function (bus) {
-                        var busStatusBadge = bus.isactive ? '<span class="badge badge-success mx-2"><i class="las la-circle"><i/></span>' : '<span class="badge badge-danger mx-2"><i class="las la-circle"><i/></span>';
+                        var busStatusBadge = '<span class="pulse-icon '+ bus.status +'"></span>';
+                        console.log(busStatusBadge);
 
                         // Create the table row
                         var row = $('<div class="bus-details mb-3">').append(
-                            $('<h4><i class="fas fa-bus"></i> ' + bus.bus_name + busStatusBadge + '</h4>&nbsp;'),
+                            $('<h4><i class="fas fa-bus"></i> ' + bus.bus_name + busStatusBadge +'</h4>&nbsp;'),
                             $('<ul>').append(
                                 $('<li><strong>Bus ID:</strong> ' + bus.bus_id + '</li>'),
                                 $('<li><strong>Bus Number:</strong> ' + bus.bus_number + '</li>'),

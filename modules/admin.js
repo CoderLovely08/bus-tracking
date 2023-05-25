@@ -8,6 +8,7 @@ const getAdminDataById = async (id) => {
         }
 
         const { rows } = await pool.query(query);
+        
         if (rows.length > 0) {
             return rows[0];
         } else return 0;
@@ -58,6 +59,7 @@ const getAllUserData = async () => {
         }
 
         const { rows } = await pool.query(query);
+
         if (rows.length > 0) {
             return rows;
         } else return 0;
@@ -74,6 +76,7 @@ const getAllAdminData = async () => {
         }
 
         const { rows } = await pool.query(query);
+
         if (rows.length > 0) {
             return rows;
         } else return 0;
@@ -90,6 +93,7 @@ const getAllDriverData = async () => {
         }
 
         const { rows } = await pool.query(query);
+
         if (rows.length > 0) {
             return rows;
         } else return 0;
@@ -107,6 +111,7 @@ const getAllBusData = async () => {
         }
 
         const { rows } = await pool.query(query);
+
         if (rows.length > 0) {
             return rows;
         } else return 0;
@@ -126,6 +131,7 @@ const addNewBus = async (busName, busNumber, busModel, busOrigin, busDestination
         }
 
         const checkResult = await pool.query(checkQuery);
+        
         if (checkResult.rows.length == 1) {
             return 1;
         }
@@ -159,6 +165,7 @@ const addNewDriver = async (driverUserName, driverPassword, driverFullName, driv
         }
 
         const checkResult = await pool.query(checkQuery);
+
         if (checkResult.rows.length == 1) {
             return 1;
         }
@@ -167,6 +174,7 @@ const addNewDriver = async (driverUserName, driverPassword, driverFullName, driv
             text: `INSERT INTO DriverInfo(driver_user_name, driver_password, driver_full_name, driver_gender, driver_contact_number, bus_id) values($1,$2,$3,$4,$5,$6)`,
             values: [driverUserName, driverPassword, driverFullName, driverGender, driverPhone, busId]
         }
+
         const { rowCount } = await pool.query(query);
 
         if (rowCount == 1) {
@@ -250,6 +258,7 @@ const getAllRouteData = async () => {
         }
 
         const { rows } = await pool.query(query);
+
         if (rows.length > 0) {
             return rows;
         } else return 0;
@@ -269,6 +278,7 @@ const addNewRoute = async (routeName) => {
         }
 
         const checkResult = await pool.query(checkQuery);
+
         if (checkResult.rows.length > 0) {
             return 1;
         }
@@ -279,6 +289,7 @@ const addNewRoute = async (routeName) => {
         }
 
         const { rowCount } = await pool.query(query);
+
         if (rowCount == 1) {
             return 0;
         } else {
@@ -333,8 +344,6 @@ const updateBusStops = async (routesArray, busId) => {
                 return 1;
             }
         });
-
-        console.log("Bus stops updated successfully.");
 
         return 0;
     } catch (error) {

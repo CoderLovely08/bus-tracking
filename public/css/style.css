@@ -209,3 +209,55 @@ select {
     opacity: 0;
   }
 }
+
+/* Styles for login and registration page ends */
+
+/* Style for pulse icon */
+.pulse-icon {
+  position: relative;
+}
+
+.pulse-icon::before,
+.pulse-icon::after {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  right: -24px;
+  top: 20%;
+  background-color: #17a2b8;
+}
+
+.pulse-icon::before {
+  width: 18px;
+  height: 18px;
+}
+
+.pulse-icon::after {
+  width: 18px;
+  height: 18px;
+  animation: pulse 1s linear infinite;
+}
+
+/* Style for pulse icon ends */
+
+.pulse-icon.arrived::before,
+.pulse-icon.arrived::after {
+  background-color: #28a745;
+}
+
+.pulse-icon.in-traffic::before,
+.pulse-icon.in-traffic::after {
+  background-color: #ffc107;
+}
+
+.pulse-icon.stop::before,
+.pulse-icon.stop::after {
+  background-color: rgb(255, 0, 0);
+}
+
+.pulse-icon.start::before,
+.pulse-icon.start::after {
+  background-color: #007bff;
+}

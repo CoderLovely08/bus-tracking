@@ -4,7 +4,7 @@
         <div class="container mt-5">
             <div class="circular-buttons card my-3">
                 <div class="form-group card-header">
-                    <h4>Driving Controls</h4>
+                    <h4>Driving Controls <span class="pulse-icon"></span> </h4>
                 </div>
                 <div class="card-body">
                     <button id="start-driving" class="btn btn-primary btn-circle" style="display: inline;">
@@ -19,6 +19,10 @@
                     <button id="traffic-btn" class="btn btn-warning btn-circle" style="display: none;">
                         <i class="las la-exclamation-triangle"></i> In Traffic
                     </button>
+                    <div class="form-check">
+                        <input id="simulation" class="form-check-input" type="checkbox" name="">
+                        <label for="simulation" class="form-check-label">Use Simulation</label>
+                    </div>
 
                     <div class="row mt-4">
                         <div class="col-md-12">
@@ -28,16 +32,25 @@
                                 </div>
                                 <div class="card-body">
                                     <ul>
-                                        <li>Click the <b>Start</b> button to begin driving the bus.</li>
-                                        <li>If you encounter any traffic, click the <b>In Traffic</b> button to indicate
+                                        <li>While testing the application, check the <b><em>Use Simulation</em></b> checkbox.</li>
+                                        <li>Initially, pulse icon with <b class="badge badge-info">this</b> color
+                                            indicates that the bus is ready to be driven.</li>
+                                        <li>Click the <b class="badge badge-primary">Start</b> button to begin driving
+                                            the bus.</li>
+                                        <li>If you encounter any traffic, click the <b class="badge badge-warning">In
+                                                Traffic</b> button to indicate
                                             the
                                             delay.</li>
-                                        <li>When you reach the destination, click the <b>Arrived</b> button to notify
+                                        <li>When you reach the destination, click the <b
+                                                class="badge badge-success">Arrived</b> button to notify
                                             the
                                             completion of the trip.</li>
-                                        <li>If needed, you can click the <b>Stop</b> button to pause or end the driving
+                                        <li>If needed, you can click the <b class="badge badge-danger">Stop</b> button
+                                            to pause or end the driving
                                             session.
                                         </li>
+                                        <li>During simulation the nearest location is traced and some offset is
+                                            added to make it look like that the vehicle is actually moving.</li>
                                     </ul>
                                 </div>
                             </div>
@@ -46,7 +59,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-6 col-sm-12">
+                <div class="col-md-6 col-sm-12 mt-2">
                     <div class="card">
                         <div class="card-header">
                             <h3><i class="las la-user"></i> Driver Details</h3>
@@ -89,7 +102,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6 col-sm-12">
+                <div class="col-md-6 col-sm-12 mt-2">
                     <div class="card">
                         <div class="card-header">
                             <h3><i class="las la-bus"></i> Bus Details</h3>
@@ -131,6 +144,18 @@
                                         <td><b>Bus Destination:</b></td>
                                         <td>
                                             <%= driverData.bus_destination %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Bus Coordinates:</b></td>
+                                        <td>
+                                            <b>Longitude: </b>
+                                            <%= driverData.longitude %>
+                                                <br>
+                                                <b>Latitude: </b>
+                                                <%= driverData.latitude %>
+                                                    <br>
+
                                         </td>
                                     </tr>
                                 </tbody>
@@ -142,140 +167,31 @@
 
         </div>
 
-        <!-- <div class="container mt-5">
-            <div class="circular-buttons card my-3">
-                <div class="form-group card-header">
-                    <h4>
-                        Driving Control
-                    </h4>
-                </div>
-                <div class="card-body">
-
-                    <button id="start-driving" class="btn btn-primary btn-circle" style="display: inline;">
-                        <i class="las la-play">Start</i>
-                    </button>
-                    <button id="stop-driving" class="btn btn-danger btn-circle" style="display: none;">
-                        <i class="las la-stop">Stop</i>
-                    </button>
-                    <button id="arrived-btn" class="btn btn-success btn-circle" style="display: none;">
-                        <i class="las la-check">Arrived</i>
-                    </button>
-                    <button id="traffic-btn" class="btn btn-warning btn-circle" style="display: none;">
-                        <i class="las la-exclamation-triangle">In Traffic</i>
-                    </button>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-sm-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="las la-user"></i>Driver Details</h3>
-                        </div>
-                        <div class="card-body">
-                            <table class="table">
-                                <tbody>
-                                    <tr>
-                                        <td><b>Driver ID:</b></td>
-                                        <td>
-                                            <%= driverData.driver_id %>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Username:</b></td>
-                                        <td>
-                                            <%= driverData.driver_user_name %>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Full Name:</b></td>
-                                        <td>
-                                            <%= driverData.driver_full_name %>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Gender:</b></td>
-                                        <td>
-                                            <%= driverData.driver_gender %>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Contact Number:</b></td>
-                                        <td>
-                                            <%= driverData.driver_contact_number %>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-sm-12 my-2">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="las la-bus"></i> Bus Details</h3>
-                        </div>
-                        <div class="card-body">
-                            <table class="table">
-                                <tbody>
-                                    <tr>
-                                        <td><b>Bus ID:</b></td>
-                                        <td>
-                                            <%= driverData.bus_id %>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Bus Name:</b></td>
-                                        <td>
-                                            <%= driverData.bus_name %>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Bus Number:</b></td>
-                                        <td>
-                                            <%= driverData.bus_number %>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Bus Model:</b></td>
-                                        <td>
-                                            <%= driverData.bus_model %>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Bus Origin:</b></td>
-                                        <td>
-                                            <%= driverData.bus_origin %>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Bus Destination:</b></td>
-                                        <td>
-                                            <%= driverData.bus_destination %>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> -->
-
         <script>
             let intervalId;
 
             $(document).ready(function () {
+
                 $('#start-driving').on('click', function () {
                     startSendingLocation();
+                    sendBusStatus('start');
+                    $('.pulse-icon').removeClass('in-traffic arrived stop');
+                    $('.pulse-icon').addClass('start');
                 });
 
                 $('#stop-driving').on('click', function () {
+                    restartJourney();
                     stopSendingLocation();
+                    sendBusStatus('stop');
+                    $('.pulse-icon').removeClass('in-traffic arrived start');
+                    $('.pulse-icon').addClass('stop');
                 });
 
                 $('#arrived-btn').on('click', function () {
                     restartJourney();
                     stopSendingLocation();
+                    sendBusStatus('arrived');
+                    $('.pulse-icon').removeClass('in-traffic stop start').addClass('arrived');
                 });
 
                 $('#traffic-btn').on('click', function () {
@@ -283,10 +199,17 @@
 
                     if ($(this).hasClass('in-traffic')) {
                         $(this).text('Resume Journey');
+                        $('.pulse-icon').removeClass('arrived stop start').addClass('in-traffic');
+                        stopSendingLocation();
+                        sendBusStatus('in-traffic');
                     } else {
                         $(this).text('In Traffic');
+                        $('.pulse-icon').removeClass('in-traffic arrived stop').addClass('start');
+                        startSendingLocation();
+                        sendBusStatus('start');
                     }
                 });
+
 
                 function restartJourney() {
                     $('#start-driving').show();
@@ -307,26 +230,6 @@
                 }
 
                 function stopSendingLocation() {
-                    $('#start-driving').show();
-                    $('#stop-driving').hide();
-                    $('#arrived-btn').hide();
-                    $('#traffic-btn').hide();
-                    // return
-
-                    $.ajax({
-                        type: "PUT",
-                        url: '/driver/update-status',
-                        data: {
-                            isActive: false,
-                        },
-                        success: function (response) {
-                            console.log("Status sent to the server");
-                        },
-                        error: function (error) {
-                            console.error("Failed to send location:", error);
-                        }
-                    });
-
                     clearInterval(intervalId);
                 }
 
@@ -340,6 +243,7 @@
                                 lat: latitude,
                                 lng: longitude,
                                 isActive: true,
+                                isSimulating: $('#simulation').prop('checked')
                             },
                             success: function (response) {
                                 console.log("Location sent to the server");
@@ -349,6 +253,23 @@
                             }
                         });
                     });
+                }
+
+
+                function sendBusStatus(status) {
+                    $.ajax({
+                        type: 'PUT',
+                        url: '/driver/busStatus',
+                        data: {
+                            status: status
+                        },
+                        success: function (response) {
+                            console.log("Status sent to server!");
+                        },
+                        error: function (error) {
+                            console.error("Failed to send status:", error);
+                        }
+                    })
                 }
             });
         </script>

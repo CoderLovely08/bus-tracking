@@ -16,7 +16,6 @@ router.route('/')
 
         let driverDetails = await driverModule.getDriverBusDetails(driverId);
 
-        console.log(driverDetails);
         res.render('driver/home', { driverData: driverDetails })
     })
 
@@ -64,16 +63,18 @@ router.route('/location')
         let lat = parseFloat(req.body.lat);
         let lng = parseFloat(req.body.lng);
         let isActive = true;
+        let isSimulating = req.body.isSimulating === 'true';
         const busId = req.session.busId; // Replace with the actual bus ID
 
-
         // Simulating Bus Location
-        console.log("Upating for bus: ", busId);
+        if (isSimulating) {
+            const offset = 0.001; // Adjust the offset value as per your requirement
 
-        let num = Math.random();
+            lat += (Math.random() * offset) - (offset / 2);
 
-        lat += num;
-        lng += num;
+            console.log("Latitude: " + lat);
+            console.log("Longitude: " + lng);
+        }
         // Simulation ends
 
         try {
@@ -83,7 +84,6 @@ router.route('/location')
             console.error(error);
             res.status(500).send({ statusCode: 1 });
         }
-
     });
 
 
@@ -103,4 +103,23 @@ router.route('/update-status')
 
     });
 
+
+router.route('/busStatus')
+    .put(async (req, res) => {
+
+        const busId = req.session.busId; // Replace with the actual bus ID
+        const { status } = req.body;
+
+        try {
+            let statusCode = await driverModule.updateBusStatus(busId, status);
+
+            if (statusCode == 0) {
+                res.status(200).send('');
+            }
+            else throw statusCode
+        } catch (error) {
+            console.error(error);
+            res.status(500)
+        }
+    })
 module.exports = router;

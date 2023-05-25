@@ -16,10 +16,10 @@ const { checkUserLoginMiddleware } = require('../middleware/loginCheck')
 
 
 
-// Admin Login route
+// User Login route
 router.route('/login')
     .get(async (req, res) => {
-        
+
         if (req.session.isUserAuthenticated) {
             res.redirect('/')
         }
@@ -32,10 +32,11 @@ router.route('/login')
 
         const loginStatus = await userModule.checkValidUserLogin(email, pass);
         req.session.usertype = 'User'
-        
+
         res.send({ statusCode: loginStatus });
     })
 
+// User Registration route
 router.route('/register')
     .get(async (req, res) => {
         if (req.session.isUserAuthenticated) {
@@ -51,5 +52,13 @@ router.route('/register')
 
         res.send({ statusCode: insertStatus });
     })
+
+// User home route
+router.route('/')
+    .get(checkUserLoginMiddleware, async (req, res) => {
+        res.render('user/home')
+    })
+
+
 
 module.exports = router
