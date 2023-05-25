@@ -59,3 +59,18 @@
   padding: 12px 6px;
   border-radius: 12px;
 }
+
+
+/* For Toggling eye icon for password */
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: grey;
+}
+
+.toggle-password:hover {
+  color: black;
+}

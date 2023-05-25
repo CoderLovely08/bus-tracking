@@ -13,4 +13,16 @@ $(document).ready(function () {
             passwordIcon.removeClass("las la-eye-slash").addClass("las la-eye");
         }
     });
+
+
+    // Toggle Password Visibility
+    $('.toggle-password').click(function () {
+        $(this).toggleClass('fa-eye fa-eye-slash');
+        var input = $('#password');
+        if (input.attr('type') === 'password') {
+            input.attr('type', 'text');
+        } else {
+            input.attr('type', 'password');
+        }
+    });
 });
