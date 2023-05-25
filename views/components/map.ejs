@@ -1,202 +1,226 @@
 <%- include('../partials/commonheader') -%>
 
 
-<% if( locals.userType.includes('Admin')) { %>
-    <%- include('../admin/navigation') -%>
-<% } else if(locals.userType.includes('Driver')) { %>
-    <%- include('../driver/navigation') -%>
-<% } else if(locals.userType.includes('User')) { %>
-    <%- include('../user/navigation') -%>
-<% } %>
+    <% if( locals.userType.includes('Admin')) { %>
+        <%- include('../admin/navigation') -%>
+            <% } else if(locals.userType.includes('Driver')) { %>
+                <%- include('../driver/navigation') -%>
+                    <% } else if(locals.userType.includes('User')) { %>
+                        <%- include('../user/navigation') -%>
+                            <% } %>
+
+                                <style>
+                                    #map {
+                                        height: 400px;
+                                        width: 100%;
+                                    }
+
+                                    h4 {
+                                        display: inline;
+                                    }
+                                </style>
+                                <div class="container">
+                                    <div class="alert alert-primary" role="alert">
+                                        <h2>Bus Tracking System - Map View</h2>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <div id="map" class="col-lg-8 m-2 card"></div>
+                                        <div class="card m-2">
+                                            <div class="card-header">
+                                                <h3>
+                                                    Bus Live Status
+                                                    <div class="dropdown d-inline float-end">
+                                                        <button class="btn btn-light dropdown-toggle" type="button"
+                                                            id="dropdownMenuButton" data-toggle="dropdown"
+                                                            aria-haspopup="true" aria-expanded="false">
+                                                            <i class="fas fa-info-circle"></i>
+                                                        </button>
+                                                        <ul class="dropdown-menu dropdown-menu-end"
+                                                            aria-labelledby="instructionsDropdown">
+                                                            <li>
+                                                                <h6 class="dropdown-header">Bus Status Colors:</h6>
+                                                            </li>
+                                                            <li>
+                                                                <hr class="dropdown-divider">
+                                                            </li>
+                                                            <li><a class="dropdown-item" href="#">
+                                                                <span class="badge badge-primary">Ready or Live</span></a></li>
+                                                            <li><a class="dropdown-item" href="#">
+                                                                <span class="badge bg-warning">In Traffic</span></a></li>
+                                                            <li><a class="dropdown-item" href="#">
+                                                                <span class="badge bg-success">Arrived</span></a></li>
+                                                            <li><a class="dropdown-item" href="#">
+                                                                <span class="badge bg-danger">Stop</span></a></li>
+                                                        </ul>
+                                                    </div>
+                                                </h3>
+                                            </div>
+                                            <div class="card-body">
+                                                <% busDetails.forEach((bus)=> { %>
+                                                    <div class="bus-details mb-3">
+                                                        <h4><i class="fas fa-bus"></i>
+                                                            <%= bus.bus_name %>
+                                                                <span class="pulse-icon <%= bus.status %>"></span>
+                                                        </h4>
+                                                        <ul>
+                                                            <li><strong>Bus ID:</strong>
+                                                                <%= bus.bus_id %>
+                                                            </li>
+                                                            <li><strong>Bus Number:</strong>
+                                                                <%= bus.bus_number %>
+                                                            </li>
+                                                            <li><strong>Bus Model:</strong>
+                                                                <%= bus.bus_model %>
+                                                            </li>
+                                                            <li><strong>Bus Origin:</strong>
+                                                                <%= bus.bus_origin %>
+                                                            </li>
+                                                            <li><strong>Bus Destination:</strong>
+                                                                <%= bus.bus_destination %>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <% }); %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
 
-        <style>
-            #map {
-                height: 400px;
-                width: 100%;
-            }
+                                <script>
+                                    function initMap() {
+                                        var markers = []; // Store the markers on the map
+                                        var map; // Declare the map variable
 
-            h4 {
-                display: inline;
-            }
-        </style>
-        <div class="container">
-            <div class="alert alert-primary" role="alert">
-                <h1>Bus Tracking System - Map View</h1>
-            </div>
-            <div class="row">
-                <div id="map" class="col-lg-8 m-2 card"></div>
-                <div class="card m-2">
-                    <div class="card-header">
-                        <h3>
-                            Bus Live Status
-                        </h3>
-                    </div>
-                    <div class="card-body">
-                        <% busDetails.forEach((bus)=> { %>
-                            <div class="bus-details mb-3">
-                                <h4><i class="fas fa-bus"></i>
-                                    <%= bus.bus_name %>
-                                    <span class="pulse-icon <%= bus.status %>"></span>
-                                </h4>
-                                <ul>
-                                    <li><strong>Bus ID:</strong>
-                                        <%= bus.bus_id %>
-                                    </li>
-                                    <li><strong>Bus Number:</strong>
-                                        <%= bus.bus_number %>
-                                    </li>
-                                    <li><strong>Bus Model:</strong>
-                                        <%= bus.bus_model %>
-                                    </li>
-                                    <li><strong>Bus Origin:</strong>
-                                        <%= bus.bus_origin %>
-                                    </li>
-                                    <li><strong>Bus Destination:</strong>
-                                        <%= bus.bus_destination %>
-                                    </li>
-                                </ul>
-                            </div>
-                            <% }); %>
-                    </div>
-                </div>
-            </div>
-        </div>
+                                        function updateBusLocations() {
+                                            // Make an AJAX request to fetch the live bus locations from the server
+                                            $.ajax({
+                                                type: 'GET',
+                                                url: '/api/get-live-status', // Replace with the actual server endpoint
+                                                success: function (response) {
+                                                    var busLocations = response.busLocations; // Extract the bus location data
+                                                    var busDetails = response.busDetails; // Extract the bus details
 
-        <script>
-            function initMap() {
-                var markers = []; // Store the markers on the map
-                var map; // Declare the map variable
+                                                    // Update the bus locations on the map
+                                                    busLocations.forEach(function (location) {
+                                                        // Find an existing marker for the bus ID
+                                                        var marker = markers.find(function (marker) {
+                                                            return marker.busId === location.busId;
+                                                        });
 
-                function updateBusLocations() {
-                    // Make an AJAX request to fetch the live bus locations from the server
-                    $.ajax({
-                        type: 'GET',
-                        url: '/api/get-live-status', // Replace with the actual server endpoint
-                        success: function (response) {
-                            var busLocations = response.busLocations; // Extract the bus location data
-                            var busDetails = response.busDetails; // Extract the bus details
+                                                        // If the marker doesn't exist, create a new one
+                                                        if (!marker) {
+                                                            marker = new google.maps.Marker({
+                                                                busId: location.busId,
+                                                                map: map,
+                                                                title: 'Bus ' + location.busId,
+                                                                icon: '/static/images/bus-icon.png'
+                                                                // You can customize the marker icon here
+                                                            });
 
-                            // Update the bus locations on the map
-                            busLocations.forEach(function (location) {
-                                // Find an existing marker for the bus ID
-                                var marker = markers.find(function (marker) {
-                                    return marker.busId === location.busId;
-                                });
+                                                            // Determine the bus status (active or inactive)
+                                                            var busStatus = location.isActive ? 'Active' : 'Inactive';
+                                                            // Create an info window and set its content
+                                                            var infoWindow = new google.maps.InfoWindow({
+                                                                content: 'Bus ' + location.busId + '<br>Status: ' + busStatus
+                                                            });
 
-                                // If the marker doesn't exist, create a new one
-                                if (!marker) {
-                                    marker = new google.maps.Marker({
-                                        busId: location.busId,
-                                        map: map,
-                                        title: 'Bus ' + location.busId,
-                                        icon: '/static/images/bus-icon.png'
-                                        // You can customize the marker icon here
-                                    });
+                                                            // Attach an event listener to the marker to open the info window on click
+                                                            marker.addListener('click', function () {
+                                                                infoWindow.open(map, marker);
+                                                            });
 
-                                    // Determine the bus status (active or inactive)
-                                    var busStatus = location.isActive ? 'Active' : 'Inactive';
-                                    // Create an info window and set its content
-                                    var infoWindow = new google.maps.InfoWindow({
-                                        content: 'Bus ' + location.busId + '<br>Status: ' + busStatus
-                                    });
+                                                            markers.push(marker);
+                                                        }
 
-                                    // Attach an event listener to the marker to open the info window on click
-                                    marker.addListener('click', function () {
-                                        infoWindow.open(map, marker);
-                                    });
+                                                        // Update the marker position
+                                                        marker.setPosition({ lat: location.lat, lng: location.lng });
+                                                    });
 
-                                    markers.push(marker);
-                                }
+                                                    // Remove markers for buses that are no longer present
+                                                    markers.forEach(function (marker) {
+                                                        var isBusPresent = busLocations.some(function (location) {
+                                                            return marker.busId === location.busId;
+                                                        });
+                                                        if (!isBusPresent) {
+                                                            marker.setMap(null);
+                                                        } else {
+                                                            // Update the marker status based on the received bus location data
+                                                            var location = busLocations.find(function (location) {
+                                                                return marker.busId === location.busId;
+                                                            });
+                                                            var busStatus = location.isActive ? 'Active' : 'Inactive';
+                                                            marker.setTitle('Bus ' + location.busId + ' - ' + busStatus);
+                                                        }
+                                                    });
 
-                                // Update the marker position
-                                marker.setPosition({ lat: location.lat, lng: location.lng });
-                            });
+                                                    // Update the bus details table
+                                                    updateBusDetailsTable(busDetails);
 
-                            // Remove markers for buses that are no longer present
-                            markers.forEach(function (marker) {
-                                var isBusPresent = busLocations.some(function (location) {
-                                    return marker.busId === location.busId;
-                                });
-                                if (!isBusPresent) {
-                                    marker.setMap(null);
-                                } else {
-                                    // Update the marker status based on the received bus location data
-                                    var location = busLocations.find(function (location) {
-                                        return marker.busId === location.busId;
-                                    });
-                                    var busStatus = location.isActive ? 'Active' : 'Inactive';
-                                    marker.setTitle('Bus ' + location.busId + ' - ' + busStatus);
-                                }
-                            });
+                                                    // Center the map on the first bus location
+                                                    if (busLocations.length > 0) {
+                                                        map.setCenter({ lat: busLocations[0].lat, lng: busLocations[0].lng });
+                                                    }
+                                                },
+                                                error: function (error) {
+                                                    console.log('Error retrieving live bus locations:', error);
+                                                }
+                                            });
+                                        }
 
-                            // Update the bus details table
-                            updateBusDetailsTable(busDetails);
+                                        // Function to update the bus details table
+                                        function updateBusDetailsTable(busDetails) {
+                                            var tableBody = $('.card-body'); // Get the table body element
 
-                            // Center the map on the first bus location
-                            if (busLocations.length > 0) {
-                                map.setCenter({ lat: busLocations[0].lat, lng: busLocations[0].lng });
-                            }
-                        },
-                        error: function (error) {
-                            console.log('Error retrieving live bus locations:', error);
-                        }
-                    });
-                }
+                                            // Clear the table body
+                                            tableBody.empty();
 
-                // Function to update the bus details table
-                function updateBusDetailsTable(busDetails) {
-                    var tableBody = $('.card-body'); // Get the table body element
+                                            // Loop through the bus details and append rows to the table
+                                            busDetails.forEach(function (bus) {
+                                                var busStatusBadge = '<span class="pulse-icon ' + bus.status + '"></span>';
+                                                console.log(busStatusBadge);
 
-                    // Clear the table body
-                    tableBody.empty();
+                                                // Create the table row
+                                                var row = $('<div class="bus-details mb-3">').append(
+                                                    $('<h4><i class="fas fa-bus"></i> ' + bus.bus_name + busStatusBadge + '</h4>&nbsp;'),
+                                                    $('<ul>').append(
+                                                        $('<li><strong>Bus ID:</strong> ' + bus.bus_id + '</li>'),
+                                                        $('<li><strong>Bus Number:</strong> ' + bus.bus_number + '</li>'),
+                                                        $('<li><strong>Bus Model:</strong> ' + bus.bus_model + '</li>'),
+                                                        $('<li><strong>Bus Origin:</strong> ' + bus.bus_origin + '</li>'),
+                                                        $('<li><strong>Bus Destination:</strong> ' + bus.bus_destination + '</li>')
+                                                    )
+                                                );
 
-                    // Loop through the bus details and append rows to the table
-                    busDetails.forEach(function (bus) {
-                        var busStatusBadge = '<span class="pulse-icon '+ bus.status +'"></span>';
-                        console.log(busStatusBadge);
+                                                // Append the row to the table body
+                                                tableBody.append(row);
+                                            });
+                                        }
 
-                        // Create the table row
-                        var row = $('<div class="bus-details mb-3">').append(
-                            $('<h4><i class="fas fa-bus"></i> ' + bus.bus_name + busStatusBadge +'</h4>&nbsp;'),
-                            $('<ul>').append(
-                                $('<li><strong>Bus ID:</strong> ' + bus.bus_id + '</li>'),
-                                $('<li><strong>Bus Number:</strong> ' + bus.bus_number + '</li>'),
-                                $('<li><strong>Bus Model:</strong> ' + bus.bus_model + '</li>'),
-                                $('<li><strong>Bus Origin:</strong> ' + bus.bus_origin + '</li>'),
-                                $('<li><strong>Bus Destination:</strong> ' + bus.bus_destination + '</li>')
-                            )
-                        );
+                                        // Initialize the map with a default center
+                                        map = new google.maps.Map(document.getElementById('map'), {
+                                            zoom: 18,
+                                            center: { lat: 37.7833, lng: -122.4167 },
+                                            mapTypeId: google.maps.MapTypeId.ROADMAP
+                                        });
 
-                        // Append the row to the table body
-                        tableBody.append(row);
-                    });
-                }
+                                        // Call updateBusLocations initially to populate the map with the latest bus locations and details
+                                        updateBusLocations();
 
-                // Initialize the map with a default center
-                map = new google.maps.Map(document.getElementById('map'), {
-                    zoom: 15,
-                    center: { lat: 37.7833, lng: -122.4167 },
-                    mapTypeId: google.maps.MapTypeId.ROADMAP
-                });
+                                        // Update bus locations and details every 10 seconds (adjust the interval as needed)
+                                        setInterval(updateBusLocations, 5000);
+                                    }
 
-                // Call updateBusLocations initially to populate the map with the latest bus locations and details
-                updateBusLocations();
+                                    // Load the Google Maps API and initialize the map when the page has finished loading
+                                    function loadMapScript() {
+                                        var script = document.createElement('script');
+                                        script.src =
+                                            'https://maps.googleapis.com/maps/api/js?key=AIzaSyBa6oIOta-5DkFn98ubdcI6FA4h76jsDeo&callback=initMap';
+                                        script.async = true;
+                                        script.defer = true;
+                                        document.body.appendChild(script);
+                                    }
 
-                // Update bus locations and details every 10 seconds (adjust the interval as needed)
-                setInterval(updateBusLocations, 5000);
-            }
+                                    loadMapScript();
 
-            // Load the Google Maps API and initialize the map when the page has finished loading
-            function loadMapScript() {
-                var script = document.createElement('script');
-                script.src =
-                    'https://maps.googleapis.com/maps/api/js?key=AIzaSyBa6oIOta-5DkFn98ubdcI6FA4h76jsDeo&callback=initMap';
-                script.async = true;
-                script.defer = true;
-                document.body.appendChild(script);
-            }
-
-            loadMapScript();
-
-        </script>
+                                </script>

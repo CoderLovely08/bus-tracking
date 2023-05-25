@@ -46,9 +46,8 @@ app.use('/user', userRouter);
 app.get('/logout', (req, res) => {
     req.session.destroy(function (error) {
         if (error) {
-            console.log("Unable to logout!");
+            console.log("Unable to logout!", error);
         } else {
-            console.log("Logged out!");
             res.redirect('/')
         }
     })
