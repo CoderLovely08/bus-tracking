@@ -155,16 +155,18 @@
                     <div class="flex">
                         <!-- Gender -->
                         <label>
-                            <select id="gender" required="" class="form-control">
+                            <select id="gender" required="" class="input">
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
                                 <option value="Other">Other</option>
                             </select>
+                            <span>Gender</span>
                         </label>
 
                         <!-- Date of Birth -->
                         <label>
-                            <input id="dob" required="" placeholder="" type="date" class="form-control">
+                            <input id="dob" required="" placeholder="" type="text" class="input" onfocus="(this.type='date')" onblur="(this.type='text')">
+                            <span>Date of birth</span>
                         </label>
                     </div>
 
