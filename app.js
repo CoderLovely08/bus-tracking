@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
 
 app.use('/admin', adminRouter);
 app.use('/driver', driverRouter);
-app.use('/users', userRouter);
+app.use('/user', userRouter);
 
 
 app.get('/logout', (req, res) => {

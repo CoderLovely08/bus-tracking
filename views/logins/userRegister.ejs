@@ -1,0 +1,286 @@
+<%- include('../partials/header') -%>
+    <style>
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 350px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .title {
+            font-size: 28px;
+            color: royalblue;
+            font-weight: 600;
+            letter-spacing: -1px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding-left: 30px;
+        }
+
+        .title::before,
+        .title::after {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            left: 0px;
+            background-color: royalblue;
+        }
+
+        .title::before {
+            width: 18px;
+            height: 18px;
+            background-color: royalblue;
+        }
+
+        .title::after {
+            width: 18px;
+            height: 18px;
+            animation: pulse 1s linear infinite;
+        }
+
+        .message,
+        .signin {
+            color: rgba(88, 87, 87, 0.822);
+            font-size: 14px;
+        }
+
+        .signin {
+            text-align: center;
+        }
+
+        .signin a {
+            color: royalblue;
+        }
+
+        .signin a:hover {
+            text-decoration: underline royalblue;
+        }
+
+        .flex {
+            display: flex;
+            width: 100%;
+            gap: 6px;
+        }
+
+        .form label {
+            position: relative;
+        }
+
+        .form label .input,
+        select {
+            width: 100%;
+            padding: 10px 10px 20px 10px;
+            outline: 0;
+            border: 1px solid rgba(105, 105, 105, 0.397);
+            border-radius: 10px;
+        }
+
+        .form label .input+span {
+            position: absolute;
+            left: 10px;
+            top: 15px;
+            color: grey;
+            font-size: 0.9em;
+            cursor: text;
+            transition: 0.3s ease;
+        }
+
+        .form label .input:placeholder-shown+span {
+            top: 15px;
+            font-size: 0.9em;
+        }
+
+        .form label .input:focus+span,
+        .form label .input:valid+span {
+            top: 30px;
+            font-size: 0.7em;
+            font-weight: 600;
+        }
+
+        .form label .input:valid+span {
+            color: green;
+        }
+
+        .submit {
+            border: none;
+            outline: none;
+            background-color: royalblue;
+            padding: 10px;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 16px;
+            transform: .3s ease;
+        }
+
+        .submit:hover {
+            background-color: rgb(56, 90, 194);
+        }
+
+        @keyframes pulse {
+            from {
+                transform: scale(0.9);
+                opacity: 1;
+            }
+
+            to {
+                transform: scale(1.8);
+                opacity: 0;
+            }
+        }
+    </style>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="m-4">
+                <form class="form">
+                    <p class="title">Register </p>
+                    <p class="message">Signup now and get full access to our app. </p>
+
+                    <!-- Full name -->
+                    <label>
+                        <input id="fullname" required="" placeholder="" minlength="5" type="text" class="input">
+                        <span>Firstname</span>
+                    </label>
+
+                    <div class="flex">
+                        <!-- Gender -->
+                        <label>
+                            <select id="gender" required="" class="form-control">
+                                <option value="" disabled selected>Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </label>
+
+                        <!-- Date of Birth -->
+                        <label>
+                            <input id="dob" required="" placeholder="" type="date" class="form-control">
+                        </label>
+                    </div>
+
+                    <!-- Email -->
+                    <label>
+                        <input id="email" required="" placeholder="" type="email" minlength="8" class="input">
+                        <span>Email</span>
+                    </label>
+
+                    <!-- Contact number -->
+                    <label>
+                        <input id="phone" required="" placeholder="" type="number" maxlength="10" class="input">
+                        <span>Phone number</span>
+                    </label>
+
+                    <!-- Password -->
+                    <div class="flex">
+
+                        <label>
+                            <input id="pass" required="" placeholder="" type="password" minlength="8" maxlength="16"
+                                class="input">
+                            <span>Password</span>
+                        </label>
+                        <label>
+                            <input id="cpass" required="" placeholder="" type="password" minlength="8" maxlength="16"
+                                class="input">
+                            <span>Confirm password</span>
+                        </label>
+                    </div>
+                    <button class="submit">Submit</button>
+                    <p class="signin">Already have an acount ? <a href="login">Signin</a> </p>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+
+            /// --------------------------------------------------
+            // User Defined functions
+            // --------------------------------------------------
+            function addLoadingSpinner() {
+                $('#loading-overlay').addClass('loading-overlay');
+                $('#spinner').addClass('spinner');
+            }
+
+            function removeLoadingSpinner() {
+                $('#loading-overlay').removeClass('loading-overlay');
+                $('#spinner').removeClass('spinner');
+            }
+            // -----------------------------------------------
+            // -----------------------------------------------
+
+
+            $('form').submit(function (event) {
+                event.preventDefault();
+
+                let name = $('#fullname').val().trim();
+                let email = $('#email').val().trim();
+                let phone = $('#phone').val().trim();
+                let pass = $('#pass').val().trim();
+                let cpass = $('#cpass').val().trim();
+                let gender = $('#gender option:selected').val().trim();
+                let dob = $('#dob').val().trim();
+
+                if (validatePassword(phone, pass, cpass)) {
+                    let confirmOption = confirm("Are you sure to subimt?");
+                    if (confirmOption) {
+                        addLoadingSpinner();
+                        $.ajax({
+                            type: 'POST',
+                            url: '',
+                            data: {
+                                name: name,
+                                email: email,
+                                gender: gender,
+                                dob: dob,
+                                phone: phone,
+                                pass: pass,
+                            },
+                            success: function (respone) {
+                                if (respone.statusCode == 0) {
+                                    alert("Registration successful! Redirecting to login page.");
+                                    window.location = '/user/login'
+                                } else if (respone.statusCode == 1) {
+                                    alert("Email already registered! Kindly Login");
+                                } else if (respone.statusCode == 2) {
+                                    alert("Phone Number already registered! Kindly Login");
+                                } else if (respone.statusCode == 3) {
+                                    alert("Unable to register, kindly try again later");
+                                } else {
+                                    alert("Unable to register, kindly try again later!");
+                                }
+                            },
+                            error: function (error) {
+                                alert("An unknown error has occured!");
+                            },
+                            complete: function (status) {
+                                removeLoadingSpinner();
+                            }
+                        })
+                    }
+                }
+
+            })
+
+            function validatePassword(phone, pass, cpass) {
+                if (phone.length != 10) {
+                    alert("Phone number must contain exactly 10 digits!");
+                    return false;
+                }
+                if (pass !== cpass) {
+                    alert("Passwords do not match!");
+                    return false;
+                }
+                return true;
+            }
+        })
+    </script>
+    <%- include('../partials/footer') -%>

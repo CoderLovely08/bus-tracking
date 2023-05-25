@@ -11,9 +11,16 @@
                             required>
                     </div>
                     <div class="form-floating">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Password"
-                            required>
+                        <label for="password">Password:</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" name="password"
+                                placeholder="Enter your password" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    <i id="togglePassword" class="las la-eye"></i>
+                                </span>
+                            </div>
+                        </div>
                     </div>
                     <hr>
                     <button type="submit" class="btn btn-primary">Login</button>
@@ -74,3 +81,6 @@
             })
         })
     </script>
+
+<%- include('../partials/footer') -%>
+    

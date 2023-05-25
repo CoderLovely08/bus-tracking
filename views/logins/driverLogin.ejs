@@ -1,77 +1,86 @@
 <%- include('../partials/header') -%>
 
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="login-container card m-4 col-lg-6">
-                <h1 class="login-heading card-header">Driver Login</h1>
-                <form class="login-form card-body" action="/driver/login" method="POST">
-                    <div class="form-floating">
-                        <label for="username">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" placeholder="Username"
-                            required>
+<div class="bg"></div>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="login-container card m-4 col-lg-6">
+            <h1 class="login-heading card-header">Driver Login</h1>
+            <form class="login-form card-body" action="/driver/login" method="POST">
+                <div class="form-floating">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
+                </div>
+                <div class="form-floating">
+                    <label for="password">Password:</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i id="togglePassword" class="las la-eye"></i>
+                            </span>
+                        </div>
                     </div>
-                    <div class="form-floating">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Password"
-                            required>
-                    </div>
-                    <hr>
-                    <button type="submit" class="btn btn-primary">Login</button>
-
-                </form>
-            </div>
+                </div>
+                <hr>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
         </div>
     </div>
+</div>
 
+<div id="loading-overlay"></div>
+<div id="spinner"></div>
 
-    <script>
-        $(document).ready(function () {
-            // --------------------------------------------------
-            // User Defined functions
-            // --------------------------------------------------
-            function addLoadingSpinner() {
-                $('#loading-overlay').addClass('loading-overlay');
-                $('#spinner').addClass('spinner');
-            }
+<script>
+    $(document).ready(function () {
+        // --------------------------------------------------
+        // User Defined functions
+        // --------------------------------------------------
+        function addLoadingSpinner() {
+            $('#loading-overlay').addClass('loading-overlay');
+            $('#spinner').addClass('spinner');
+        }
 
-            function removeLoadingSpinner() {
-                $('#loading-overlay').removeClass('loading-overlay');
-                $('#spinner').removeClass('spinner');
-            }
-            // -----------------------------------------------
-            // -----------------------------------------------
+        function removeLoadingSpinner() {
+            $('#loading-overlay').removeClass('loading-overlay');
+            $('#spinner').removeClass('spinner');
+        }
+        // -----------------------------------------------
+        // -----------------------------------------------
 
-            $('form').submit(function (event) {
-                event.preventDefault();
+        $('form').submit(function (event) {
+            event.preventDefault();
 
-                let username = $('#username').val().trim();
-                let password = $('#password').val().trim();
-                
-                addLoadingSpinner();
+            let username = $('#username').val().trim();
+            let password = $('#password').val().trim();
 
-                $.ajax({
-                    type: "POST",
-                    url: '',
-                    data: {
-                        username: username,
-                        password: password
-                    },
-                    success: function (resposne) {
-                        if (resposne.success) {
-                            alert("Login successful!");
-                            window.location = '/driver';
-                        } else {
-                            alert("Invalid credentials");
-                        }
-                    },
-                    error: function (error) {
-                        alert("An error has occurred, try again later! ");
-                    },
-                    complete: function (status) {
-                        removeLoadingSpinner();
+            addLoadingSpinner();
+
+            $.ajax({
+                type: "POST",
+                url: '',
+                data: {
+                    username: username,
+                    password: password
+                },
+                success: function (response) {
+                    if (response.success) {
+                        alert("Login successful!");
+                        window.location = '/driver';
+                    } else {
+                        alert("Invalid credentials");
                     }
-                })
-
+                },
+                error: function (error) {
+                    alert("An error has occurred, try again later!");
+                },
+                complete: function (status) {
+                    removeLoadingSpinner();
+                }
             })
+
         })
-    </script>
+    })
+</script>
+
+<%- include('../partials/footer') -%>
