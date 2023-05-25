@@ -67,14 +67,18 @@
             display: flex;
             width: 100%;
             gap: 6px;
+            justify-content: space-between;
         }
 
         .form label {
             position: relative;
         }
+        
+        #gender-label{
+            width: 200px;
+        }
 
-        .form label .input,
-        select {
+        .form label .input {
             width: 100%;
             padding: 10px 10px 20px 10px;
             outline: 0;
@@ -150,18 +154,19 @@
 
                     <div class="flex">
                         <!-- Gender -->
-                        <label>
-                            <select id="gender" required="" class="form-control">
-                                <option value="" disabled selected>Select Gender</option>
+                        <label id="gender-label">
+                            <select id="gender" required="" class="input">
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
                                 <option value="Other">Other</option>
                             </select>
+                            <span>Gender</span>
                         </label>
 
                         <!-- Date of Birth -->
                         <label>
-                            <input id="dob" required="" placeholder="" type="date" class="form-control">
+                            <input id="dob" required="" placeholder="" type="date" class="input">
+                            <span>Date of Birth</span>
                         </label>
                     </div>
 
@@ -202,7 +207,7 @@
     <script>
         $(document).ready(function () {
 
-            /// --------------------------------------------------
+            // --------------------------------------------------
             // User Defined functions
             // --------------------------------------------------
             function addLoadingSpinner() {

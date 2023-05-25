@@ -19,7 +19,7 @@ const { checkUserLoginMiddleware } = require('../middleware/loginCheck')
 // Admin Login route
 router.route('/login')
     .get(async (req, res) => {
-        console.log("hi");
+        
         if (req.session.isUserAuthenticated) {
             res.redirect('/')
         }
@@ -31,7 +31,7 @@ router.route('/login')
         const { email, pass } = req.body;
 
         const loginStatus = await userModule.checkValidUserLogin(email, pass);
-        
+
         res.send({ statusCode: loginStatus });
     })
 
