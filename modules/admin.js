@@ -121,6 +121,25 @@ const getAllBusData = async () => {
     }
 }
 
+// Get all bus info
+const getAllUnassignedBusData = async () => {
+    try {
+        const query = {
+            text: `SELECT BusInfo.bus_id, BusInfo.bus_name, BusInfo.bus_model, BusInfo.bus_origin, BusInfo.bus_destination FROM BusInfo LEFT JOIN DriverInfo ON DriverInfo.bus_id = BusInfo.bus_id WHERE DriverInfo.bus_id IS NULL`
+        }
+
+        const { rows } = await pool.query(query);
+
+        if (rows.length > 0) {
+            return rows;
+        } else return 0;
+
+    } catch (error) {
+        console.log("Error in getAllUnassignedBusData() call: ", error);
+        return 0;
+    }
+}
+
 // Add new Bus
 
 const addNewBus = async (busName, busNumber, busModel, busOrigin, busDestination) => {
@@ -249,6 +268,27 @@ const deleteBusById = async (id) => {
     }
 }
 
+// Delete Driver by id
+const deleteDriverById = async (id) => {
+    try {
+        const query = {
+            text: `DELETE FROM DriverInfo WHERE driver_id = $1`,
+            values: [id]
+        }
+
+        const { rowCount } = await pool.query(query);
+
+        if (rowCount == 1) {
+            return 0;
+        } else {
+            return 1;
+        }
+
+    } catch (error) {
+        console.log("Error in deleteDriverById() call: ", error);
+        return 2;
+    }
+}
 
 const getAllRouteData = async () => {
     try {
@@ -436,12 +476,14 @@ module.exports = {
     getAllBusData,
     getLiveBusDetails,
     getRouteDetailsByBusId,
+    getAllUnassignedBusData,
 
     // Delete methods
     deleteBusById,
     deleteRouteById,
     deleteAdminById,
     deleteUserById,
+    deleteDriverById,
 
     // Update methods
     updateBusStops,

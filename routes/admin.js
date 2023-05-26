@@ -104,7 +104,7 @@ router.route('/admins')
 router.route('/drivers')
     .get(checkAdminLoginMiddleware, async (req, res) => {
         const driverData = await adminModule.getAllDriverData();
-        const busData = await adminModule.getAllBusData();
+        const busData = await adminModule.getAllUnassignedBusData();
 
         res.render('admin/drivers', {
             driverData: driverData,
@@ -117,6 +117,13 @@ router.route('/drivers')
         const driverAddStatuts = await adminModule.addNewDriver(driverUserName, driverPassword, driverFullName, driverGender, driverPhone, busId);
 
         res.send({ statusCode: driverAddStatuts });
+    })
+    .delete(async (req, res) => {
+        const { driverId } = req.body;
+        
+        const deleteStatus = await adminModule.deleteDriverById(driverId);
+        
+        res.send({statusCode: deleteStatus});
     })
 
 // Bus routes

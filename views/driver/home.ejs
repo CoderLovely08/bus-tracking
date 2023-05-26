@@ -1,6 +1,8 @@
 <%- include('../partials/commonheader') -%>
     <%- include('navigation') -%>
-
+<script>
+    JSON.stringify('<%= driverData %>');
+</script>
         <div class="container mt-5">
             <div class="circular-buttons card my-3">
                 <div class="form-group card-header">
@@ -96,31 +98,31 @@
                                     <tr>
                                         <td><b>Driver ID:</b></td>
                                         <td>
-                                            <%= driverData.driver_id %>
+                                            <%= driverData[0].driver_id %>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td><b>Username:</b></td>
                                         <td>
-                                            <%= driverData.driver_user_name %>
+                                            <%= driverData[0].driver_user_name %>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td><b>Full Name:</b></td>
                                         <td>
-                                            <%= driverData.driver_full_name %>
+                                            <%= driverData[0].driver_full_name %>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td><b>Gender:</b></td>
                                         <td>
-                                            <%= driverData.driver_gender %>
+                                            <%= driverData[0].driver_gender %>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td><b>Contact Number:</b></td>
                                         <td>
-                                            <%= driverData.driver_contact_number %>
+                                            <%= driverData[0].driver_contact_number %>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -139,47 +141,47 @@
                                     <tr>
                                         <td><b>Bus ID:</b></td>
                                         <td>
-                                            <%= driverData.bus_id %>
+                                            <%= driverData[0].bus_id %>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td><b>Bus Name:</b></td>
                                         <td>
-                                            <%= driverData.bus_name %>
+                                            <%= driverData[0].bus_name %>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td><b>Bus Number:</b></td>
                                         <td>
-                                            <%= driverData.bus_number %>
+                                            <%= driverData[0].bus_number %>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td><b>Bus Model:</b></td>
                                         <td>
-                                            <%= driverData.bus_model %>
+                                            <%= driverData[0].bus_model %>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td><b>Bus Origin:</b></td>
                                         <td>
-                                            <%= driverData.bus_origin %>
+                                            <%= driverData[0].bus_origin %>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td><b>Bus Destination:</b></td>
                                         <td>
-                                            <%= driverData.bus_destination %>
+                                            <%= driverData[0].bus_destination %>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td><b>Bus Coordinates:</b></td>
                                         <td>
                                             <b>Longitude: </b>
-                                            <%= driverData.longitude %>
+                                            <%= driverData[0].longitude %>
                                                 <br>
                                                 <b>Latitude: </b>
-                                                <%= driverData.latitude %>
+                                                <%= driverData[0].latitude %>
                                                     <br>
 
                                         </td>
@@ -194,9 +196,43 @@
         </div>
 
         <script>
-            let intervalId;
-
+            
             $(document).ready(function () {
+                let intervalId;
+
+                // if (navigator.geolocation) {
+                //     // Geolocation is supported
+                //     navigator.geolocation.getCurrentPosition(
+                //         function (position) {
+                //             // User granted permission, and we have the coordinates
+                //             var latitude = position.coords.latitude;
+                //             var longitude = position.coords.longitude;
+                //             // Process the location coordinates here
+
+                //             // Example: Display the latitude and longitude
+                //             console.log('Latitude:', latitude);
+                //             console.log('Longitude:', longitude);
+                //             $('button select input').prop('disabled', false);
+                //         },
+                //         function (error) {
+                //             // User denied permission or an error occurred
+                //             alert('Location permission is required for drivers');
+                //             $('button, select, input').prop('disabled', true);
+                //             return
+                //         }
+                //     );
+                // } else {
+                //     // Geolocation is not supported
+                //     alert('Geolocation is not supported');
+                //     $('button select input').prop('disabled', true);
+                //     return;
+                // }
+
+
+
+
+
+
 
                 $('#start-driving').on('click', function () {
                     startSendingLocation();

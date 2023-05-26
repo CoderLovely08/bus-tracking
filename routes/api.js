@@ -65,12 +65,18 @@ router.route('/route-detail/:busId')
     .get(async (req, res) => {
         let busId = req.params.busId;
         const routeDetails = await adminModule.getRouteDetailsByBusId(busId);
+        console.log(routeDetails);
+        if (routeDetails == 0) {
+            res.send(`
+            <script>alert("No intermediate routes are available kindly add an intermediate route from the rotes page.")</script>
+            `)
+        } else {
+            const userType = req.session.usertype;
 
-        const userType = req.session.usertype;
-
-        if (userType)
-            res.render('components/routeMap', { routeDetails: routeDetails, userType: userType });
-        else res.redirect('/')
+            if (userType)
+                res.render('components/routeMap', { routeDetails: routeDetails, userType: userType });
+            else res.redirect('/')
+        }
     })
 
 router.route('/v1/route-detail/:busId')
