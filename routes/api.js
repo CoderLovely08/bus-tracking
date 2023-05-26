@@ -6,7 +6,8 @@ require('dotenv').config();
 router.use(express.static("public"));
 
 // Module for DB Operations
-const adminModule = require('../modules/admin')
+const adminModule = require('../modules/admin');
+const { route } = require('./user');
 
 // Route for rendering map view
 router.route('/live-status')
@@ -70,5 +71,15 @@ router.route('/route-detail/:busId')
         if (userType)
             res.render('components/routeMap', { routeDetails: routeDetails, userType: userType });
         else res.redirect('/')
+    })
+
+router.route('/v1/route-detail/:busId')
+    .get(async (req, res) => {
+        let busId = req.params.busId;
+        const routeDetails = await adminModule.getRouteDetailsByBusId(busId);
+
+        // if (userType)
+        res.json(routeDetails);
+        // else res.redirect('/')
     })
 module.exports = router;
