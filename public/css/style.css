@@ -261,3 +261,14 @@ select {
 .pulse-icon.start::after {
   background-color: #007bff;
 }
+
+
+@keyframes pulse1 {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}

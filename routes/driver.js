@@ -64,6 +64,7 @@ router.route('/location')
         let lng = parseFloat(req.body.lng);
         let isActive = true;
         let isSimulating = req.body.isSimulating === 'true';
+        let currentLocation = req.body.currentLocation;
         const busId = req.session.busId; // Replace with the actual bus ID
 
         // Simulating Bus Location
@@ -78,7 +79,7 @@ router.route('/location')
         // Simulation ends
 
         try {
-            await driverModule.updateLiveLocation(busId, lat, lng, isActive);
+            await driverModule.updateLiveLocation(busId, lat, lng, isActive, currentLocation);
             res.status(200).send({ statusCode: 0 });
         } catch (error) {
             console.error(error);

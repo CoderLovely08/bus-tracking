@@ -52,21 +52,57 @@
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
+                        <span><b>Important:</b> <em>
+                                Please select the time for each stop in ascending order to correctly order the
+                                stops.</span>
+                        </em>
+                        <hr>
                         <form id="addBusForm">
-                            <div class="form-group">
-                                <label for="routeDropdown">Select Stops</label>
-                                <% for(let i=0; i < routesList.length; i++) { %>
+                            <div class="form-row">
+                                <!-- Source Station selection -->
+                                <div class="form-group col-6">
+                                    <label for="routeDropdown">Select Stops</label>
                                     <div class="checkbox">
                                         <label>
-                                            <input id="<%= routesList[i].route_id %>" type="checkbox"
-                                                name="updatedPermissions[]" value="<%= routesList[i].route_name %>">
-                                            <%= routesList[i].route_name %>
+                                            <input type="checkbox" value="0" checked disabled>
+                                            <span id="origin-station">Source</span>
                                         </label>
                                     </div>
+                                </div>
+                                <div class="form-group col-3"></div>
+                                <!----------------------------------->
+
+                                <!-- Intermediate Routes Selection -->
+                                <% for(let i=0; i < routesList.length; i++) { %>
+                                    <div class="form-group col-6">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input id="<%= routesList[i].route_id %>" type="checkbox"
+                                                    name="selectedRoutes[]" value="<%= routesList[i].route_name %>">
+                                                <%= routesList[i].route_name %>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-3">
+                                        <input name="selectedTimes[]" type="time" class="form-control">
+                                    </div>
+                                    <hr>
                                     <% } %>
-                                        <!-- Add more options here -->
-                                        </select>
+
+                                        <!-- Source Station selection -->
+                                        <!-- <div class="form-row"> -->
+                                        <div class="form-group col-6">
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" value="" checked disabled>
+                                                    <span id="destination-station">Destination</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <!----------------------------------->
+
                             </div>
+                            <hr>
                             <button type="submit" class="btn btn-primary" id="save-bus-stops">Save</button>
                         </form>
                     </div>
@@ -92,7 +128,7 @@
             <div class="row m-4">
                 <div class="alert alert-primary" role="alert">
                     List of all buses, you can also add a new bus by clicking 'Add Bus' button.
-                  </div>
+                </div>
                 <div id="" class="table-responsive dataTable ">
                     <div class="table table-bordered courseTable">
                         <table id="bus-table" class="table-sm">
@@ -119,7 +155,9 @@
                                             <%= busData[i].bus_id %>
                                         </td>
                                         <td>
-                                            <%= busData[i].bus_name %>
+                                            <a href="/api/route-detail/<%= busData[i].bus_id %>">
+                                                <%= busData[i].bus_name %>
+                                            </a>
                                         </td>
                                         <td>
                                             <%= busData[i].bus_number %>
@@ -246,20 +284,45 @@
                         }
                     } else {
                         $('#editStopsModal').modal('toggle');
+                        let sourceStation = $(this).closest('tr').find('td:eq(4)').text().trim();
+                        let destinationStation = $(this).closest('tr').find('td:eq(5)').text().trim();
+
+                        $('#origin-station').text(sourceStation + ' (Source)');
+                        $('#destination-station').text(destinationStation + ' (Destination)');
+
                         $(document).on('click', '#save-bus-stops', function (event) {
                             event.preventDefault(); // Prevent form submission
 
-                            // Get selected route IDs
+                            // Get selected route IDs and Arrival time for each
                             var selectedRoutes = [];
-                            $("input[name='updatedPermissions[]']:checked").each(function () {
+                            var selectedTimes = []
+                            $("input[name='selectedRoutes[]']:checked").each(function () {
                                 selectedRoutes.push($(this).attr("id"));
                             });
 
+                            $("input[name='selectedTimes[]']").each(function () {
+                                if ($(this).val() != '')
+                                    selectedTimes.push($(this).val());
+                            });
+
+                            console.log(selectedRoutes, selectedTimes);
+
+                            // Validate if proper seletion is made or not
+                            if (selectedRoutes.length > selectedTimes.length) {
+                                alert("Select Arrival time for each selected stop.");
+                                return
+                            }else if (selectedRoutes.length < selectedTimes.length){
+                                alert("Select Intermediate station for each selected time.");
+                                return
+                            }
+
+                            // Validate if intermediate stops are selected or not
                             if (selectedRoutes.length < 1) {
                                 alert("Select atleast 1 intermediate stop!");
                                 return;
                             }
 
+                            // Proceed to make AJAX request
                             let confirmOption = confirm("Are you sure to add selected stops?");
                             if (confirmOption) {
                                 addLoadingSpinner();
@@ -269,6 +332,7 @@
                                     url: '',
                                     data: {
                                         routesArray: selectedRoutes,
+                                        arrivalTimeArray: selectedTimes,
                                         busId: itemId[2]
                                     },
                                     success: function (response) {

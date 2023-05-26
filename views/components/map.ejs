@@ -59,7 +59,9 @@
                                                 <% busDetails.forEach((bus)=> { %>
                                                     <div class="bus-details mb-3">
                                                         <h4><i class="fas fa-bus"></i>
-                                                            <%= bus.bus_name %>
+                                                            <a href="/api/route-detail/<%= bus.bus_id %>">
+                                                                <%= bus.bus_name %>
+                                                            </a>
                                                                 <span class="pulse-icon <%= bus.status %>"></span>
                                                         </h4>
                                                         <ul>
@@ -74,6 +76,11 @@
                                                             </li>
                                                             <li><strong>Bus Origin:</strong>
                                                                 <%= bus.bus_origin %>
+                                                            </li>
+                                                            <li><strong>Currently at:</strong>
+                                                                <span class="badge badge-success">
+                                                                    <%= bus.current_stop %>
+                                                                </span>
                                                             </li>
                                                             <li><strong>Bus Destination:</strong>
                                                                 <%= bus.bus_destination %>
@@ -178,16 +185,20 @@
                                             // Loop through the bus details and append rows to the table
                                             busDetails.forEach(function (bus) {
                                                 var busStatusBadge = '<span class="pulse-icon ' + bus.status + '"></span>';
-                                                console.log(busStatusBadge);
 
                                                 // Create the table row
                                                 var row = $('<div class="bus-details mb-3">').append(
-                                                    $('<h4><i class="fas fa-bus"></i> ' + bus.bus_name + busStatusBadge + '</h4>&nbsp;'),
+                                                    $('<h4><i class="fas fa-bus"></i> <a href="/api/route-detail/' + bus.bus_id+'">'+ bus.bus_name +'</a>' + busStatusBadge + '</h4>&nbsp;'),
                                                     $('<ul>').append(
                                                         $('<li><strong>Bus ID:</strong> ' + bus.bus_id + '</li>'),
                                                         $('<li><strong>Bus Number:</strong> ' + bus.bus_number + '</li>'),
                                                         $('<li><strong>Bus Model:</strong> ' + bus.bus_model + '</li>'),
                                                         $('<li><strong>Bus Origin:</strong> ' + bus.bus_origin + '</li>'),
+                                                        $(`<li><strong>Currently at:</strong>
+                                                                <span class="badge badge-success">
+                                                                    ${bus.current_stop}
+                                                                </span>
+                                                            </li>`),
                                                         $('<li><strong>Bus Destination:</strong> ' + bus.bus_destination + '</li>')
                                                     )
                                                 );

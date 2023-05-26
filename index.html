@@ -3,20 +3,11 @@
 
 <head>
     <title>Bus Route Showcase</title>
-    <!-- <link rel="stylesheet" type="text/css" href="styles.css"> -->
+    <link rel="stylesheet" type="text/css" href="styles.css">
     <style>
-        .container {
-            text-align: center;
-            padding-top: 50px;
-        }
-
-        h1 {
-            color: #333;
-        }
-
         #busRoute {
-            width: 800px;
-            height: 400px;
+            width: 250px;
+            height: 500px;
             background-color: #f2f2f2;
         }
 
@@ -26,54 +17,66 @@
             stroke-width: 2px;
             transition: stroke-dashoffset 1s ease-in-out;
         }
-
-        .busStop {
-            fill: #333;
-            transition: transform 0.5s ease-in-out;
-        }
-
-        .busStop:hover {
-            transform: scale(1.5);
-        }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>Bus Route Showcase</h1>
-        <svg id="busRoute" viewBox="0 0 800 400">
-            <path id="routePath" d="M100 200 L300 100 L500 200 L700 100" />
-            <circle class="busStop" cx="100" cy="200" r="8" />
-            <circle class="busStop" cx="300" cy="100" r="8" />
-            <circle class="busStop" cx="500" cy="200" r="8" />
-            <circle class="busStop" cx="700" cy="100" r="8" />
-        </svg>
-    </div>
+
+    <svg id="busRoute"></svg>
 
     <script>
-        // Get the path and stops elements
-        const routePath = document.getElementById("routePath");
-        const busStops = document.getElementsByClassName("busStop");
+        function createBusRoute(numStops, labels) {
+            const busRoute = document.getElementById("busRoute");
+            let viewBox = "100 0 100 " + (numStops + 1) * 100;
+            busRoute.setAttribute('viewBox', viewBox)
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
 
-        // Calculate the length of the path
-        const pathLength = routePath.getTotalLength();
+            const startY = 100; // Starting y-coordinate
+            const distance = 100; // Distance between each point
 
-        // Set the dash array and offset for the path
-        routePath.style.strokeDasharray = pathLength;
-        routePath.style.strokeDashoffset = pathLength;
+            let pathData = "";
 
-        // Animate the path and stops on page load
-        window.addEventListener("load", () => {
-            routePath.style.strokeDashoffset = "0";
+            for (let i = 0; i < numStops; i++) {
+                const x = 100; // x-coordinate (fixed value)
+                const y = startY + (i * distance); // Calculate y-coordinate
 
-            for (let i = 0; i < busStops.length; i++) {
-                setTimeout(() => {
-                    busStops[i].style.transform = "scale(1)";
-                }, i * 500);
+                // Add circle for each point
+                const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                circle.setAttribute("class", "busStop");
+                circle.setAttribute("cx", x);
+                circle.setAttribute("cy", y);
+                circle.setAttribute("r", "8");
+                busRoute.appendChild(circle);
+
+                // Add label for each circle
+                const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                label.setAttribute("class", "busLabel");
+                label.setAttribute("x", x + 15);
+                label.setAttribute("y", y + 5);
+                label.textContent = labels[i];
+                busRoute.appendChild(label);
+
+                // Generate path data
+                if (i === 0) {
+                    pathData += `M${x} ${y}`;
+                } else {
+                    pathData += ` L${x} ${y}`;
+                }
             }
-        });
 
+            // Set the path data
+            path.setAttribute("d", pathData);
+            path.setAttribute("id", "routePath");
+            busRoute.appendChild(path);
+        }
+
+        // Usage example
+        const numStops = 5; // Change this value to the desired number of stops
+        const labels = ["Stop 1", "Stop 2", "Stop 3", "Stop 4", "Stop 5"]; // Array of labels
+
+        createBusRoute(numStops, labels);
     </script>
+
 </body>
 
 </html>

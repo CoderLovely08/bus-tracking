@@ -1,0 +1,203 @@
+<%- include('../partials/commonheader') -%>
+
+
+<% if( locals.userType.includes('Admin')) { %>
+    <%- include('../admin/navigation') -%>
+<% } else if(locals.userType.includes('Driver')) { %>
+    <%- include('../driver/navigation') -%>
+<% } else if(locals.userType.includes('User')) { %>
+    <%- include('../user/navigation') -%>
+<% } %>
+
+<style>
+    #busRoute {
+        width: 350px;
+        height: 500px;
+        opacity: 0.8;
+        font-size: 24px;
+    }
+
+    #routePath {
+        fill: none;
+        stroke: #333;
+        stroke-width: 2px;
+        transition: stroke-dashoffset 1s ease-in-out;
+    }
+</style>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <% if(routeDetails.length > 0) { %>
+        <div class="col-12">
+            <div class="alert alert-primary" role="alert">
+                <h2>Bus Schedule Chart</h2>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h4><%= routeDetails[0].bus_id+ ' - ' +routeDetails[0].bus_name %> Route Map</h4>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <h5>
+                        Source - <span id="source-stop"></span>
+                    </h5>
+                    <h5>
+                        Destination - <span id="destination-stop"></span>
+                    </h5>
+                    <h5>
+                        Total Stops - <span id="total-stops"></span>
+                    </h5>
+                </div>
+                <svg id="busRoute" preserveAspectRatio="xMidYMid meet"></svg>
+            </div>
+        </div>
+
+        <% } else { %>
+            <div class="alert alert-primary" role="alert">
+                <h2>Buses with atleast 1 intermediate stop is displayed here.</h2>
+            </div>
+        <% }  %>
+    </div>
+</div>
+
+<script>
+    // Calculate total stops
+    let numStops = parseInt('<%= routeDetails.length %>') + 2;
+    let totalStops = document.getElementById('total-stops');
+    totalStops.innerText = numStops;
+    
+    // Getting routes data from DB
+    let routeDetailsObject = '<%- JSON.stringify(routeDetails) %>';
+    // Parsing route results
+    routeDetailsObject = JSON.parse(routeDetailsObject);
+
+    let stops = [];
+    let arrivalTimeArray = [];
+    let originStation = routeDetailsObject[0].bus_origin;
+    let destinationStation = routeDetailsObject[0].bus_destination;
+    
+    // Setting data to target elements
+    let sourceStation = document.getElementById('source-stop');
+    sourceStation.innerText = originStation;
+    let destinationStop = document.getElementById('destination-stop');
+    destinationStop.innerText = destinationStation;
+    
+    // Get current stop value from the database object 
+    let currentStop = routeDetailsObject[0].current_stop
+    
+    let timeString = routeDetailsObject[0].arrival_time.replace('+00',''); // Time string in HH:MM:SS format
+
+    // Create a new Date object using the time string
+    let time = new Date(`2000-01-01T${timeString}`);
+
+    time.setMinutes(time.getMinutes() - 10); // Subtract 10 minutes
+    let result = time.toTimeString().slice(0, 8); // Extract HH:MM:SS from the result
+
+    // Adding data for origin station
+    stops.push(routeDetailsObject[0].bus_origin);
+    arrivalTimeArray.push(result);
+    
+    // Creating array of routes and arrival time
+    routeDetailsObject.forEach(element => {
+        stops.push(element.route_name);
+        arrivalTimeArray.push(element.arrival_time.replace('+00',''));
+    });
+    timeString = arrivalTimeArray[arrivalTimeArray.length - 1];
+    time = new Date(`2000-01-01T${timeString}`);
+    
+    time.setMinutes(time.getMinutes() + 10); // Add 10 minutes
+    result = time.toTimeString().slice(0, 8); // Extract HH:MM:SS from the result
+
+
+    // Adding data for destination station
+    stops.push(routeDetailsObject[0].bus_destination);
+    arrivalTimeArray.push(result);
+</script>
+
+<script>
+    function createBusRoute(numStops, busStops, currentStop, arrivalTimeArray) {
+
+        const busRoute = document.getElementById("busRoute");
+        let viewBox = "200 50 100 " + (numStops*100 );
+        busRoute.setAttribute("style", `height:${(numStops*100)}px`)
+
+        busRoute.setAttribute('viewBox', viewBox)
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+
+        const startY = 100; // Starting y-coordinate
+        const distance = 100; // Distance between each point
+
+        let pathData = "";
+
+        for (let i = 0; i < numStops; i++) {
+            const x = 100; // x-coordinate (fixed value)
+            const y = startY + (i * distance); // Calculate y-coordinate
+
+            // Add circle for each point
+            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            circle.setAttribute("class", "busStop");
+            circle.setAttribute("cx", x);
+            circle.setAttribute("cy", y);
+            circle.setAttribute("r", "10");
+
+            // Check if current stop is the live stop
+            if(currentStop == busStops[i]){
+                circle.setAttribute("r", "12");
+                circle.setAttribute("style", "fill: #007bff; animation: pulse1 1s infinite; ");
+            } else if(busStops.indexOf(currentStop) > i){
+                circle.setAttribute("style", "fill: red");
+            } else {
+                circle.setAttribute("style", "fill: #28a745");
+            }
+
+            busRoute.appendChild(circle);
+
+            // Add label for each circle
+            const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            label.setAttribute("class", "busLabel");
+            label.setAttribute("x", x + 15);
+            label.setAttribute("y", y + 5);
+            label.textContent = busStops[i];
+            busRoute.appendChild(label);
+            
+            // Add label for each circle
+            const innerSpan = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            innerSpan.setAttribute("class", "busLabel");
+            innerSpan.setAttribute("x", x + 15);
+            innerSpan.setAttribute("y", y + 25);
+            // Create a fixed date to combine with the time value
+            const fixedDate = '1970-01-01';
+
+            // Combine the fixed date and time value
+            const dateTimeString = fixedDate + 'T' + arrivalTimeArray[i] + 'Z';
+            let formattedArrivalDate = new Date(dateTimeString);
+            // Subtract 5 hours and 30 minutes
+            formattedArrivalDate.setHours(formattedArrivalDate.getHours() - 5);
+            formattedArrivalDate.setMinutes(formattedArrivalDate.getMinutes() - 30);
+
+            innerSpan.textContent = new Date(formattedArrivalDate).toLocaleTimeString();
+            innerSpan.setAttribute("style", "font-size: 18px;")
+            busRoute.appendChild(innerSpan);
+
+            // Generate path data
+            if (i === 0) {
+                pathData += `M${x} ${y}`;
+            } else {
+                pathData += ` L${x} ${y}`;
+            }
+        }
+
+        // Set the path data
+        path.setAttribute("d", pathData);
+        path.setAttribute("id", "routePath");
+        busRoute.appendChild(path);
+    }
+
+    // Usage example
+    // numStops = 5; // Change this value to the desired number of stops
+    const busStops = stops
+
+    createBusRoute(numStops, busStops, currentStop, arrivalTimeArray);
+</script>

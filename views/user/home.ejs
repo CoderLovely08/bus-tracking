@@ -1,4 +1,131 @@
 <%- include('../partials/commonheader') -%>
     <%- include('navigation') -%>
 
-    Welcome User
+        <style>
+            .jumbotron {
+                background-color: #fff;
+                padding: 1rem;
+            }
+
+            .form {
+                max-width: 100%;
+            }
+
+            .profile-card {
+                /* width: 300px; */
+                background-color: #fff;
+                border-radius: 10px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+            }
+
+            .profile-header {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
+            .profile-header img {
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+            }
+
+            .profile-name {
+                margin-top: 10px;
+                font-size: 24px;
+                color: #333;
+            }
+
+            .profile-details {
+                font-size: 16px;
+                color: #555;
+            }
+
+            .profile-info {
+                margin-bottom: 10px;
+            }
+
+            .profile-info label {
+                font-weight: bold;
+            }
+
+            .profile-info span {
+                margin-left: 10px;
+            }
+        </style>
+
+        <div class="container mt-5">
+            <div class="alert alert-primary" role="alert">
+                <h1 class="text-center"> Welcome, <%= userData.user_full_name %>
+                </h1>
+                <hr>
+            </div>
+            <div class="row justify-content-center">
+                <div class="m-4">
+                    <form class="form col-12">
+                        <p class="title">User Profile</p>
+
+                        <div class="card">
+                            <div class="profile-card col-12 ">
+                                <div class="profile-header">
+                                    <img src="/static/images/male.jpeg" alt="" class="rounded-circle m-2" style="width: 150px; height: 150px;">
+                                    <h2 class="profile-name"><%= userData.user_full_name %></h2>
+                                </div>
+                                <div class="profile-details">
+                                    <div class="profile-info">
+                                        <label>Email:</label>
+                                        <span><%= userData.user_email %></span>
+                                    </div>
+                                    <div class="profile-info">
+                                        <label>Gender:</label>
+                                        <span><%= userData.user_gender %></span>
+                                    </div>
+                                    <div class="profile-info">
+                                        <label>Date of Birth:</label>
+                                        <span><%= new Date(userData.user_dob).toDateString() %></span>
+                                    </div>
+                                    <div class="profile-info">
+                                        <label>Contact Number:</label>
+                                        <span>+91 <%= userData.user_contact_number %></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h3 class="card-header mt-3">Bus Tracking System</h3>
+                            <div class="jumbotron">
+                                <p>Track your buses in real-time and enjoy convenient and efficient transportation.</p>
+
+                                <h4>Features:</h4>
+                                <ul>
+                                    <li><strong>Real-Time Bus Tracking:</strong> Keep an eye on the exact location of
+                                        your
+                                        bus in
+                                        real-time.</li>
+                                    <li><strong>Live Updates:</strong> Receive live updates about delays, diversions,
+                                        and
+                                        other
+                                        important information.</li>
+                                    <li><strong>Route Maps:</strong> Access detailed route maps to plan your journey
+                                        more
+                                        effectively.
+                                    </li>
+                                    <li><strong>User-Friendly Interface:</strong> Enjoy an intuitive and easy-to-use
+                                        interface for
+                                        seamless navigation and interaction.</li>
+                                    <li><strong>Multi-Platform Support:</strong> Access the bus tracking system from
+                                        your
+                                        smartphone,
+                                        tablet, or computer.</li>
+                                </ul>
+
+                                <p>With our bus tracking system, you can make your daily commute more efficient and plan
+                                    your journey
+                                    with confidence. Experience the convenience and reliability of our advanced tracking
+                                    technology
+                                    today!</p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>

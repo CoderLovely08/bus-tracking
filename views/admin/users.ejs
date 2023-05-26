@@ -53,15 +53,12 @@
                                             <%= userData[i].user_gender %>
                                         </td>
                                         <td>
-                                            <%= userData[i].user_dob %>
+                                            <%= new Date(userData[i].user_dob).toDateString() %>
                                         </td>
                                         <td>
                                             <%= userData[i].user_contact_number %>
                                         </td>
                                         <td>
-                                            <button id="update-user-<%= userData[i].user_id %>"
-                                                class="updateDelete btn btn-success btn-sm"><i class="fa fa-pencil"
-                                                    aria-hidden="true"></i></button>
                                             <button id="delete-user-<%= userData[i].user_id %>"
                                                 class="updateDelete btn btn-danger btn-sm"><i class="fa fa-trash"
                                                     aria-hidden="true"></i></button>
@@ -95,6 +92,41 @@
                 }
                 // -----------------------------------------------
                 // -----------------------------------------------
+
+
+                $(document).on('click', '.updateDelete', function () {
+                    let itemId = $(this).attr('id').split('-');
+                    let operationType = itemId[0];
+                    if (operationType.includes('delete')) {
+                        let confirmOption = confirm("Are you sure to delete this user?")
+                        if (confirmOption) {
+                            addLoadingSpinner();
+                            $.ajax({
+                                type: 'DELETE',
+                                url: '',
+                                data: {
+                                    userId: itemId[2],
+                                },
+                                success: function (response) {
+                                    if (response.statusCode == 0) {
+                                        alert("User Deleted successully");
+                                        location.reload();
+                                    } else if (response.statusCode == 1) {
+                                        alert("Unable to delete User!");
+                                    } else {
+                                        alert("An error has occured, try again later");
+                                    }
+                                },
+                                error: function (error) {
+                                    alert("An error has occured!");
+                                },
+                                complete: function (status) {
+                                    removeLoadingSpinner();
+                                }
+                            })
+                        }
+                    }
+                })
 
 
             })

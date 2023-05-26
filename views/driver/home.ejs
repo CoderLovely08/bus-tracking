@@ -24,6 +24,31 @@
                         <label for="simulation" class="form-check-label">Use Simulation</label>
                     </div>
 
+                    <div class="row m-1">
+                        <div class="card col-lg=4 col-sm-12 col-md-6">
+                            <div class="form-group col-12">
+                                <label class="card-title" for="">
+                                    <h6>
+                                        Update Location
+                                    </h6>
+                                </label>
+                                <select class="form-control col-12" name="" id="updated-location">
+                                    <option value="<%= driverData[0].bus_origin %>">
+                                        <%= driverData[0].bus_origin %>
+                                    </option>
+                                    <% for(let i=0; i< driverData.length; i++) { %>
+                                        <option value="<%= driverData[i].route_name %>">
+                                            <%= driverData[i].route_name %>
+                                        </option>
+                                        <% } %>
+                                            <option value="<%= driverData[0].bus_destination %>">
+                                                <%= driverData[0].bus_destination %>
+                                            </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row mt-4">
                         <div class="col-md-12">
                             <div class="card">
@@ -32,7 +57,8 @@
                                 </div>
                                 <div class="card-body">
                                     <ul>
-                                        <li>While testing the application, check the <b><em>Use Simulation</em></b> checkbox.</li>
+                                        <li>While testing the application, tick the <b><em>Use Simulation</em></b>
+                                            checkbox.</li>
                                         <li>Initially, pulse icon with <b class="badge badge-info">this</b> color
                                             indicates that the bus is ready to be driven.</li>
                                         <li>Click the <b class="badge badge-primary">Start</b> button to begin driving
@@ -243,7 +269,8 @@
                                 lat: latitude,
                                 lng: longitude,
                                 isActive: true,
-                                isSimulating: $('#simulation').prop('checked')
+                                isSimulating: $('#simulation').prop('checked'),
+                                currentLocation: $('#updated-location option:selected').val()
                             },
                             success: function (response) {
                                 console.log("Location sent to the server");

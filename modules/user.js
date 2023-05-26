@@ -67,10 +67,10 @@ const checkValidUserLogin = async (email, pass) => {
             return 1;
         } else if (rowCount == 1) {
             let checkPassword = await bcrypt.compare(pass, rows[0].user_password);
-            
+
             if (!checkPassword) {
                 return 2;
-            } else return 0;
+            } else return [rows[0]];
         }
     } catch (error) {
         console.log("Error in checkValidUserLogin() call: ", error);
@@ -78,7 +78,27 @@ const checkValidUserLogin = async (email, pass) => {
     }
 }
 
+
+const getUserDataByUserId = async (id) => {
+    try {
+        const query = {
+            text: `SELECT * FROM UserInfo WHERE user_id = $1`,
+            values: [id]
+        }
+
+        const { rows } = await pool.query(query);
+
+        if (rows.length > 0) {
+            return rows[0];
+        } else return 0;
+
+    } catch (error) {
+        console.log("Error in getUserDataByUserId() call: ", error);
+        return 0;
+    }
+}
 module.exports = {
     addNewUser,
-    checkValidUserLogin
+    checkValidUserLogin,
+    getUserDataByUserId
 }

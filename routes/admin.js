@@ -67,6 +67,12 @@ router.route('/users')
 
         res.render('admin/users', { userData: userData });
     })
+    .delete(checkAdminLoginMiddleware, async (req, res) => {
+        const { userId } = req.body;
+
+        const deleteStatus = await adminModule.deleteUserById(userId);
+        res.send({ statusCode: deleteStatus });
+    })
 
 // Admins routes
 router.route('/admins')
@@ -108,8 +114,6 @@ router.route('/drivers')
     .post(async (req, res) => {
         const { driverUserName, driverPassword, driverFullName, driverGender, busId, driverPhone } = req.body;
 
-        console.log(driverUserName, driverPassword, driverFullName, driverGender, busId, driverPhone);
-
         const driverAddStatuts = await adminModule.addNewDriver(driverUserName, driverPassword, driverFullName, driverGender, driverPhone, busId);
 
         res.send({ statusCode: driverAddStatuts });
@@ -127,8 +131,6 @@ router.route('/bus')
 
         const { busName, busNumber, busModel, busOrigin, busDestination } = req.body;
 
-        console.log(busName, busNumber, busModel, busOrigin, busDestination);
-
         const addBusStatus = await adminModule.addNewBus(busName, busNumber, busModel, busOrigin, busDestination);
         res.send({ statusCode: addBusStatus });
     })
@@ -141,11 +143,9 @@ router.route('/bus')
         res.send({ statusCode: deleteStatus });
     })
     .put(async (req, res) => {
-        const { routesArray, busId } = req.body;
+        const { routesArray, arrivalTimeArray, busId } = req.body;
 
-        console.log(routesArray, busId);
-
-        const updateBusStatus = await adminModule.updateBusStops(routesArray, busId);
+        const updateBusStatus = await adminModule.updateBusStops(routesArray, arrivalTimeArray, busId);
 
         res.send({ statusCode: updateBusStatus });
     })
@@ -155,7 +155,6 @@ router.route('/live-status')
     .get(checkAdminLoginMiddleware, async (req, res) => {
 
         const busDetails = await adminModule.getLiveBusDetails();
-        console.log(busDetails);
 
         res.render('components/map', { busDetails: busDetails });
     })
@@ -182,8 +181,6 @@ router.route('/get-live-status').get(checkAdminLoginMiddleware, async (req, res)
             busLocations.push(busLocation);
         });
 
-        console.log(busLocations);
-
         // Combine bus locations and bus details into a single object or array
         var responseData = {
             busLocations: busLocations,
@@ -206,7 +203,6 @@ router.route('/routes')
     })
     .post(async (req, res) => {
         const { routeName } = req.body;
-        console.log(routeName);
 
         const addRouteResult = await adminModule.addNewRoute(routeName);
         // res.send({ statusCode: 0 });
@@ -214,7 +210,6 @@ router.route('/routes')
     })
     .delete(async (req, res) => {
         const { itemId } = req.body;
-        console.log(itemId);
 
         const deleteStatus = await adminModule.deleteRouteById(itemId);
         res.send({ statusCode: 0 })

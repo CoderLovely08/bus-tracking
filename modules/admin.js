@@ -8,7 +8,7 @@ const getAdminDataById = async (id) => {
         }
 
         const { rows } = await pool.query(query);
-        
+
         if (rows.length > 0) {
             return rows[0];
         } else return 0;
@@ -131,7 +131,7 @@ const addNewBus = async (busName, busNumber, busModel, busOrigin, busDestination
         }
 
         const checkResult = await pool.query(checkQuery);
-        
+
         if (checkResult.rows.length == 1) {
             return 1;
         }
@@ -140,7 +140,6 @@ const addNewBus = async (busName, busNumber, busModel, busOrigin, busDestination
             text: `INSERT INTO BusInfo(bus_name, bus_number, bus_model, bus_origin, bus_destination) values($1,$2,$3,$4,$5)`,
             values: [busName, busNumber, busModel, busOrigin, busDestination]
         }
-        console.log(query);
 
         const { rowCount } = await pool.query(query);
 
@@ -324,7 +323,7 @@ const deleteRouteById = async (id) => {
 }
 
 
-const updateBusStops = async (routesArray, busId) => {
+const updateBusStops = async (stationsArray, arrivalTimeArray, busId) => {
     try {
         const deletePreviousStops = {
             text: `DELETE FROM RouteMapping WHERE bus_id = $1`,
@@ -333,17 +332,18 @@ const updateBusStops = async (routesArray, busId) => {
 
         await pool.query(deletePreviousStops);
 
-        routesArray.forEach(async (element) => {
-
+        for (let index = 0; index < stationsArray.length; index++) {
+            const stopName = stationsArray[index];
+            const arrivalTime = arrivalTimeArray[index];
             const insertNewStops = {
-                text: `INSERT INTO RouteMapping (route_id, bus_id) VALUES ($1, $2)`,
-                values: [element, busId]
+                text: `INSERT INTO RouteMapping (route_id, bus_id, arrival_time) VALUES ($1, $2, $3)`,
+                values: [stopName, busId, arrivalTime]
             }
             const { rowCount } = await pool.query(insertNewStops);
             if (rowCount != 1) {
                 return 1;
             }
-        });
+        }
 
         return 0;
     } catch (error) {
@@ -372,6 +372,53 @@ const deleteAdminById = async (id) => {
         return 2;
     }
 }
+
+const deleteUserById = async (userId) => {
+    try {
+        const query = {
+            text: `DELETE FROM UserInfo WHERE user_id = $1`,
+            values: [userId]
+        }
+
+        const { rowCount } = await pool.query(query);
+
+        if (rowCount == 1) {
+            return 0;
+        } else {
+            return 1;
+        }
+
+    } catch (error) {
+        console.log("Error in deleteUserById() call: ", error);
+        return 2;
+    }
+}
+
+
+const getRouteDetailsByBusId = async (busId) => {
+    try {
+        const query = {
+            text: `SELECT *
+            FROM BusInfo
+            JOIN RouteMapping ON BusInfo.bus_id = RouteMapping.bus_id
+            JOIN RouteInfo ON RouteInfo.route_id = RouteMapping.route_id
+            JOIN BusLocation ON BusLocation.bus_id = BusInfo.bus_id
+            WHERE BusInfo.bus_id = $1 ORDER BY RouteMapping.arrival_time ASC
+            `,
+            values: [busId]
+        }
+
+        const { rows } = await pool.query(query);
+
+        if (rows.length > 0) {
+            return rows;
+        } else return 0;
+
+    } catch (error) {
+        console.log("Error in getRouteDetailsByBusId() call: ", error);
+        return 0;
+    }
+}
 module.exports = {
     // Add methods
     addNewAdmin,
@@ -388,11 +435,13 @@ module.exports = {
     getAdminDataById,
     getAllBusData,
     getLiveBusDetails,
+    getRouteDetailsByBusId,
 
     // Delete methods
     deleteBusById,
     deleteRouteById,
     deleteAdminById,
+    deleteUserById,
 
     // Update methods
     updateBusStops,

@@ -58,4 +58,17 @@ router.route('/get-live-status').get(async (req, res) => {
     }
 });
 
+
+// API Route for getting bus route details
+router.route('/route-detail/:busId')
+    .get(async (req, res) => {
+        let busId = req.params.busId;
+        const routeDetails = await adminModule.getRouteDetailsByBusId(busId);
+
+        const userType = req.session.usertype;
+
+        if (userType)
+            res.render('components/routeMap', { routeDetails: routeDetails, userType: userType });
+        else res.redirect('/')
+    })
 module.exports = router;

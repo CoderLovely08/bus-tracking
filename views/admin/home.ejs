@@ -9,7 +9,8 @@
     <div class="container mt-5">
 
       <div class="alert alert-primary" role="alert">
-        <h1 class="text-center"> Welcome, <%= adminData.admin_full_name %> </h1>
+        <h1 class="text-center"> Welcome, <%= adminData.admin_full_name %>
+        </h1>
         <hr>
       </div>
 
@@ -34,7 +35,6 @@
         <p>With our bus tracking system, you can make your daily commute more efficient and plan your journey
           with confidence. Experience the convenience and reliability of our advanced tracking technology
           today!</p>
-
       </div>
 
       <div class="row">
@@ -85,10 +85,11 @@
               <p class="card-title">List of available options</p>
               <!-- Add a list of options the admin can do -->
               <ul class="list-group">
-                <li class="list-group-item">Manage Drivers</li>
-                <li class="list-group-item">Manage Buses</li>
-                <li class="list-group-item">View Users</li>
-                <li class="list-group-item">View Live Status</li>
+                <li class="list-group-item"><a href="/admin/admins">Manage Other Admins</a></li>
+                <li class="list-group-item"><a href="/admin/drivers">Manage Drivers</a></li>
+                <li class="list-group-item"><a href="/admin/bus">Manage Buses</a></li>
+                <li class="list-group-item"> <a href="/admin/users">View Users</a></li>
+                <li class="list-group-item"><a href="/api/live-status">View Live Status</a></li>
                 <!-- Add more options as needed -->
               </ul>
             </div>

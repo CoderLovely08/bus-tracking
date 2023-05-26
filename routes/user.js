@@ -10,6 +10,7 @@ const pool = require('../modules/db');
 
 // Module for DB Operations
 const userModule = require('../modules/user')
+const adminModule = require('../modules/admin')
 
 // Middleware for login authorization
 const { checkUserLoginMiddleware } = require('../middleware/loginCheck')
@@ -31,12 +32,15 @@ router.route('/login')
         const { email, pass } = req.body;
 
         const loginStatus = await userModule.checkValidUserLogin(email, pass);
-        if (loginStatus == 0) {
+        if (Array.isArray(loginStatus)) {
             req.session.usertype = 'User'
             req.session.isUserAuthenticated = true;
+            req.session.userId = loginStatus[0].user_id;
+            res.send({ statusCode: 0 });
+        } else {
+            res.send({ statusCode: loginStatus });
         }
 
-        res.send({ statusCode: loginStatus });
     })
 
 // User Registration route
@@ -59,7 +63,21 @@ router.route('/register')
 // User home route
 router.route('/')
     .get(checkUserLoginMiddleware, async (req, res) => {
-        res.render('user/home')
+
+        const userData = await userModule.getUserDataByUserId(req.session.userId);
+
+        res.render('user/home', { userData: userData });
+    })
+
+router.route('/viewBuses')
+    .get(checkUserLoginMiddleware, async (req, res) => {
+        const busData = await adminModule.getLiveBusDetails();
+
+        const userType = req.session.usertype;
+
+        if (userType)
+            res.render('components/buses', { busData: busData, userType: userType });
+        else res.redirect('/')
     })
 
 
