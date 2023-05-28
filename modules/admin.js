@@ -211,7 +211,7 @@ const addNewDriver = async (driverUserName, driverPassword, driverFullName, driv
 const getLiveData = async () => {
     try {
         const query = {
-            text: `SELECT * FROM BusLocation`
+            text: `SELECT * FROM BusLocation JOIN DriverInfo ON DriverInfo.bus_id = BusLocation.bus_id`
         }
 
         const { rows } = await pool.query(query);
@@ -230,7 +230,7 @@ const getLiveData = async () => {
 const getLiveBusDetails = async () => {
     try {
         const query = {
-            text: `SELECT * FROM BusInfo JOIN BusLocation ON BusInfo.bus_id = BusLocation.bus_id`
+            text: `SELECT * FROM BusInfo JOIN BusLocation ON BusInfo.bus_id = BusLocation.bus_id JOIN DriverInfo ON DriverInfo.bus_id = BusLocation.bus_id`
         }
 
         const { rows } = await pool.query(query);

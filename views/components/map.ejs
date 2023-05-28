@@ -42,13 +42,44 @@
                                         justify-content: space-between;
                                     }
                                 </style>
+
+                                <!-- Map Modal -->
+                                <div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="mapModalLabel">Map Modal</h5>
+                                                <button type="button" class="close"
+                                                    data-dismiss="modal">&times;</button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <!-- Replace the code below with your map integration code -->
+                                                <div id="pathMap" style="height: 400px;"></div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Map Modal Ends -->
+
+
+
                                 <div class="container">
                                     <div class="alert alert-primary" role="alert">
                                         <h2>Map View</h2>
                                     </div>
+                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#mapModal">
+                                        Open Map Modal
+                                    </button>
                                     <div class="row justify-content-center">
                                         <div id="map" class="col-lg-7 mt-2 card"></div>
-                                        <div class="bus-container mt-2 col-4">
+                                        <div class="bus-container mt-2">
                                             <form class="form">
                                                 <h3 class="title">View Buses
                                                     <div class="dropdown d-inline float-end">
@@ -98,6 +129,12 @@
                                                                 <span class="pulse-icon <%= bus.status %>"></span>
                                                             </h4>
                                                             <ul>
+                                                                <li>
+                                                                    <a class="open-map-modal" href="#"
+                                                                        id="open-modal-<%= bus.bus_id %>">
+                                                                        <i class="las la-map-marked"> Open Map</i>
+                                                                    </a>
+                                                                </li>
                                                                 <li><strong>Bus ID:</strong>
                                                                     <%= bus.bus_id %>
                                                                 </li>
@@ -258,16 +295,22 @@
                                             // Loop through the bus details and append rows to the table
                                             busDetails.forEach(function (bus) {
                                                 var busStatusBadge = '<span class="pulse-icon ' + bus.status + '"></span>';
+                                                // console.log(bus);
 
                                                 // Create the table row
                                                 var row = $('<div class="bus-details mb-3">').append(
                                                     $('<h4><i class="fas fa-bus"></i> <a href="/api/route-detail/' + bus.bus_id + '">' + bus.bus_name + '</a>' + busStatusBadge + '</h4>&nbsp;'),
                                                     $('<ul>').append(
+                                                        $(`<li>
+                                                                    <a class="open-map-modal" href="#" id="open-modal-${bus.bus_id}">
+                                                                        <i class="las la-map-marked"> Open Map</i>
+                                                                    </a>
+                                                                </li>`),
                                                         $('<li><strong>Bus ID:</strong> ' + bus.bus_id + '</li>'),
                                                         $('<li><strong>Bus Number:</strong> ' + bus.bus_number + '</li>'),
                                                         $('<li><strong>Bus Model:</strong> ' + bus.bus_model + '</li>'),
-                                                        $('<li><strong>Bus Origin:</strong> ' + bus.bus_origin + '</li>'),
-                                                        $(`<li><strong>Currently at:</strong>
+                                                        $('<li class="origin-station"><strong>Bus Origin:</strong> ' + bus.bus_origin + '</li>'),
+                                                        $(`<li data-lat='${bus.latitude}' data-lng='${bus.longitude}'><strong>Currently at:</strong>
                                                                 <span class="badge badge-success">
                                                                     ${bus.current_stop}
                                                                 </span>
@@ -338,4 +381,91 @@
 
                                     // Event listener for the search input
                                     $searchInput.on('input', filterBusData);
+
+
+                                    $(document).on('click', '.open-map-modal', function (event) {
+                                        event.preventDefault();
+                                        let busId = $(this).attr('id').trim().split('-')[2];
+                                        var busName = $(this).closest('.bus-details').find('h4 a').text().trim();
+
+                                        $('#mapModal').modal('toggle');
+                                        $('#mapModalLabel').text(busName);
+
+                                        // Get the origin and destination station from the clicked row
+                                        var originStation = $(this).closest('.bus-details').find('.origin-station').text().replace('Bus Origin:', '').trim();
+                                        var currentLocation = $(this).closest('.bus-details').find('li:contains("Currently at:")').text().replace('Currently at:', '').trim();
+                                        var currentLocationCoords = [$(this).closest('.bus-details').find('li[data-lat]').data('lat'), $(this).closest('.bus-details').find('li[data-lng]').data('lng')]
+
+                                        var destinationStation = $(this).closest('.bus-details').find('li:contains("Bus Destination:")').text().replace('Bus Destination:', '').trim();
+
+                                        currentLocation = [currentLocation, currentLocationCoords]
+
+                                        displayMapRoute(originStation, destinationStation, currentLocation);
+                                    })
+
+                                    // Method to display path between two locations
+
+                                    function displayMapRoute(origin, destination, currentLocation) {
+                                        const originCity = origin;
+                                        const destinationCity = destination;
+
+                                        const map = new google.maps.Map(document.getElementById('pathMap'), {
+                                            center: { lat: 0, lng: 0 },
+                                            zoom: 12
+                                        });
+
+                                        const directionsService = new google.maps.DirectionsService();
+                                        const directionsRenderer = new google.maps.DirectionsRenderer({
+                                            map: map
+                                        });
+
+                                        const request = {
+                                            origin: originCity,
+                                            destination: destinationCity,
+                                            travelMode: google.maps.TravelMode.DRIVING
+                                        };
+
+                                        directionsService.route(request, function (response, status) {
+                                            if (status === google.maps.DirectionsStatus.OK) {
+                                                directionsRenderer.setDirections(response);
+
+                                                // Update the map bounds to include the current location and route
+                                                const bounds = new google.maps.LatLngBounds();
+                                                bounds.extend(response.routes[0].bounds.getNorthEast());
+                                                bounds.extend(response.routes[0].bounds.getSouthWest());
+                                                map.fitBounds(bounds);
+                                            } else {
+                                                console.log('Error:', status);
+                                            }
+                                        });
+
+
+                                        // Create geocoder instance
+                                        const geocoder = new google.maps.Geocoder();
+
+                                        // Geocode the current location city
+                                        geocoder.geocode({ address: currentLocation[0] }, function (results, status) {
+                                            if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
+                                                const currentLocationLatLng = results[0].geometry.location;
+                                                // Create a marker for the current location city
+                                                const currentLocationMarker = new google.maps.Marker({
+                                                    position: currentLocationLatLng,
+                                                    map: map,
+                                                    icon: '/static/images/bus-icon.png',
+                                                    title: 'Current Location: ' + currentLocation
+                                                });
+
+                                                // Adjust the map center to include the current location marker
+                                                map.setCenter(currentLocationLatLng)
+                                            } else {
+                                                console.log('Error geocoding current location city:', status);
+                                            }
+                                        });
+
+                                    }
+
+
+
+
+
                                 </script>

@@ -27,6 +27,7 @@ router.route('/live-status')
 router.route('/get-live-status').get(async (req, res) => {
     try {
         const liveBusData = await adminModule.getLiveData();
+        console.log(liveBusData);
         const busDetails = await adminModule.getLiveBusDetails();
 
         // Create an array to store bus location data
