@@ -15,7 +15,6 @@
                     </div>
                     <div class="modal-body">
                         <div class="register-container card">
-                            <h1 class="register-heading card-header">Admin Registration</h1>
                             <form class="register-form card-body" action="/admin/register" method="POST">
                                 <div class="form-floating mb-3">
                                     <label for="admin_user_name">Username</label>
@@ -41,7 +40,7 @@
                                 <div class="form-floating mb-3">
                                     <input type="date" class="form-control" id="admin_dob" name="admin_dob" required>
                                 </div>
-                                <div class="card-footer text-center">
+                                <div class="text-center">
                                     <button type="submit" class="btn btn-primary">Register</button>
                                 </div>
                             </form>
@@ -67,7 +66,7 @@
             <div class="row m-4">
                 <div class="alert alert-primary" role="alert">
                     List of all Admins, you can also add a new Admin by clicking 'Add Admin' button.
-                  </div>
+                </div>
                 <div id="" class="table-responsive dataTable">
                     <div class="table table-bordered courseTable">
                         <table id="admin-table" class="table-sm">
@@ -123,12 +122,14 @@
                 // User Defined functions
                 // --------------------------------------------------
                 function addLoadingSpinner() {
+                    $('#loading-overlay').css({ 'display': 'block' });
                     $('#loading-overlay').addClass('loading-overlay');
                     $('#spinner').addClass('spinner');
                 }
 
                 function removeLoadingSpinner() {
                     $('#loading-overlay').removeClass('loading-overlay');
+                    $('#loading-overlay').css({ 'display': 'none' });
                     $('#spinner').removeClass('spinner');
                 }
                 // -----------------------------------------------

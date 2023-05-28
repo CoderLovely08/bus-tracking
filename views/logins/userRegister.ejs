@@ -1,5 +1,5 @@
 <%- include('../partials/header') -%>
-    
+
     <div class="container">
         <div class="row justify-content-center">
             <div class="m-4">
@@ -26,7 +26,8 @@
 
                         <!-- Date of Birth -->
                         <label>
-                            <input id="dob" required="" placeholder="" type="text" class="input" onfocus="(this.type='date')" onblur="(this.type='text')">
+                            <input id="dob" required="" placeholder="" type="text" class="input"
+                                onfocus="(this.type='date')" onblur="(this.type='text')">
                             <span>Date of birth</span>
                         </label>
                     </div>
@@ -72,12 +73,14 @@
             // User Defined functions
             // --------------------------------------------------
             function addLoadingSpinner() {
+                $('#loading-overlay').css({ 'display': 'block' });
                 $('#loading-overlay').addClass('loading-overlay');
                 $('#spinner').addClass('spinner');
             }
 
             function removeLoadingSpinner() {
                 $('#loading-overlay').removeClass('loading-overlay');
+                $('#loading-overlay').css({ 'display': 'none' });
                 $('#spinner').removeClass('spinner');
             }
             // -----------------------------------------------

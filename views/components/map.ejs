@@ -24,7 +24,7 @@
                                         overflow: scroll;
                                     }
 
-                                    .bus-container{
+                                    .bus-container {
                                         display: flex;
                                         justify-content: center;
                                         padding: 12px;
@@ -32,11 +32,12 @@
                                         background: #fff;
                                         border-radius: 24px;
                                     }
-                                    .form{
+
+                                    .form {
                                         padding: 0;
                                     }
 
-                                    h3{
+                                    h3 {
                                         display: flex;
                                         justify-content: space-between;
                                     }
@@ -134,6 +135,42 @@
                                     function initMap() {
                                         var markers = []; // Store the markers on the map
                                         var map; // Declare the map variable
+
+                                        // Replace the city names with your own cities
+                                        const originCity = 'Mumbai';
+                                        const destinationCity = 'Pune';
+
+                                        // Create a map instance
+                                        map = new google.maps.Map(document.getElementById('map'), {
+                                            center: { lat: 0, lng: 0 }, // Set the initial map center
+                                            zoom: 8 // Set the initial zoom level
+                                        });
+
+                                        // Create a directions service object
+                                        const directionsService = new google.maps.DirectionsService();
+
+                                        // Create a directions renderer object
+                                        const directionsRenderer = new google.maps.DirectionsRenderer({
+                                            map: map
+                                        });
+
+                                        // Define the request parameters for the directions service
+                                        const request = {
+                                            origin: originCity,
+                                            destination: destinationCity,
+                                            travelMode: google.maps.TravelMode.DRIVING // You can change the travel mode here
+                                        };
+
+                                        // Send the request to the directions service
+                                        directionsService.route(request, function (response, status) {
+                                            if (status === google.maps.DirectionsStatus.OK) {
+                                                // Display the route on the map
+                                                directionsRenderer.setDirections(response);
+                                            } else {
+                                                console.log('Error:', status);
+                                            }
+                                        });
+
 
                                         function updateBusLocations() {
                                             // Make an AJAX request to fetch the live bus locations from the server

@@ -87,17 +87,22 @@
     </div>
 </div>
 
+
+
 <script>
+
     $(document).ready(function(){
-        // --------------------------------------------------
-        // User Defined functions
-        // --------------------------------------------------
         function addLoadingSpinner() {
+            $('#loading-overlay').css({'display' :'block'});
             $('#loading-overlay').addClass('loading-overlay');
             $('#spinner').addClass('spinner');
         }
-        // -----------------------------------------------
-        // -----------------------------------------------
+
+        function removeLoadingSpinner() {
+            $('#loading-overlay').removeClass('loading-overlay');
+            $('#loading-overlay').css({'display' :'none'});
+            $('#spinner').removeClass('spinner');
+        }
         addLoadingSpinner();
     });
 
@@ -108,6 +113,8 @@
 
         // Remove the 'loading-overlay' class
         loadingOverlay.classList.remove('loading-overlay');
+        loadingOverlay.style.display = 'none';
+        
 
         // Remove the 'spinner' class
         spinner.classList.remove('spinner');

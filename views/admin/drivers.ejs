@@ -173,12 +173,14 @@
                 // User Defined functions
                 // --------------------------------------------------
                 function addLoadingSpinner() {
+                    $('#loading-overlay').css({ 'display': 'block' });
                     $('#loading-overlay').addClass('loading-overlay');
                     $('#spinner').addClass('spinner');
                 }
 
                 function removeLoadingSpinner() {
                     $('#loading-overlay').removeClass('loading-overlay');
+                    $('#loading-overlay').css({ 'display': 'none' });
                     $('#spinner').removeClass('spinner');
                 }
                 // -----------------------------------------------
@@ -288,7 +290,7 @@
                                         driverId: driverId,
                                     },
                                     success: function (response) {
-                                        
+
                                         if (response.statusCode == 0) {
                                             alert("Bus details updated for the selected driver!");
                                             location.reload();
