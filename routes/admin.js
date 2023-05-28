@@ -118,12 +118,19 @@ router.route('/drivers')
 
         res.send({ statusCode: driverAddStatuts });
     })
+    .put(async (req, res) => {
+        const { updatedBusId, driverId } = req.body;
+
+        const updateStatus = await adminModule.updateDriverBusDetails(updatedBusId, driverId);
+
+        res.send({ statusCode: updateStatus });
+    })
     .delete(async (req, res) => {
         const { driverId } = req.body;
-        
+
         const deleteStatus = await adminModule.deleteDriverById(driverId);
-        
-        res.send({statusCode: deleteStatus});
+
+        res.send({ statusCode: deleteStatus });
     })
 
 // Bus routes

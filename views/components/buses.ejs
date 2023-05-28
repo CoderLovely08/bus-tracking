@@ -13,7 +13,8 @@
                                     .title {
                                         justify-content: space-between;
                                     }
-                                    .card-body{
+
+                                    .card-body {
                                         max-height: 550px;
                                         overflow: scroll;
                                     }
@@ -59,6 +60,15 @@
                                                         </ul>
                                                     </div>
                                                 </h3>
+
+                                                <!-- Search bar -->
+                                                <label>
+                                                    <input id="searchInput" required="" placeholder="" type="text"
+                                                        class="input">
+                                                    <span>Search for anything</span>
+                                                </label>
+                                                <!-- Search bar ends -->
+
                                                 <div class="card-body">
                                                     <% for(let i=0; i<busData.length; i++ ) { %>
                                                         <div class="form-group">
@@ -103,57 +113,38 @@
                                 </div>
 
                                 <script>
-                                    function updateBusLocations() {
-                                        // Make an AJAX request to fetch the live bus locations from the server
-                                        $.ajax({
-                                            type: 'GET',
-                                            url: '/api/get-live-status', // Replace with the actual server endpoint
-                                            success: function (response) {
-                                                var busDetails = response.busDetails; // Extract the bus details
 
-                                                // Update the bus details table
-                                                updateBusDetailsTable(busDetails);
-                                            },
-                                            error: function (error) {
-                                                console.log('Error retrieving live bus locations:', error);
-                                            }
-                                        });
-                                    }
+                                    // Get the search input element
+                                    const $searchInput = $('#searchInput');
 
-                                    function updateBusDetailsTable(busDetails) {
-                                        var tableBody = $('.card-body'); // Get the table body element
+                                    // Store the original bus data order
+                                    const originalBusData = $('.form-group').clone();
 
-                                        // Clear the table body
-                                        tableBody.empty();
+                                    // Function to filter the busData based on the search query
+                                    function filterBusData() {
+                                        const searchQuery = $searchInput.val().toLowerCase();
 
-                                        // Loop through the bus details and append rows to the table
-                                        busDetails.forEach(function (bus) {
-                                            var busStatusBadge = '<span class="pulse-icon ' + bus.status + '"></span>';
+                                        // Filter the original bus data based on the search query
+                                        const $filteredBusData = originalBusData.filter(function () {
+                                            const busName = $(this).find('.input').text().toLowerCase();
+                                            const busNumber = $(this).find('li:contains("Bus Number:")').text().toLowerCase();
+                                            const busOrigin = $(this).find('li:contains("Bus Origin:")').text().toLowerCase();
+                                            const busDestination = $(this).find('li:contains("Bus Destination:")').text().toLowerCase();
 
-                                            // Create the table row
-                                            var row = $('<div class="bus-details mb-3">').append(
-                                                $('<h4><i class="fas fa-bus"></i> <a href="/api/route-detail/' + bus.bus_id + '">' + bus.bus_name + '</a>' + busStatusBadge + '</h4>&nbsp;'),
-                                                $('<ul>').append(
-                                                    $('<li><strong>Bus ID:</strong> ' + bus.bus_id + '</li>'),
-                                                    $('<li><strong>Bus Number:</strong> ' + bus.bus_number + '</li>'),
-                                                    $('<li><strong>Bus Model:</strong> ' + bus.bus_model + '</li>'),
-                                                    $('<li><strong>Bus Origin:</strong> ' + bus.bus_origin + '</li>'),
-                                                    $(`<li><strong>Currently at:</strong>
-                                                                <span class="badge badge-success">
-                                                                    ${bus.current_stop}
-                                                                </span>
-                                                            </li>`),
-                                                    $('<li><strong>Bus Destination:</strong> ' + bus.bus_destination + '</li>')
-                                                )
+                                            return (
+                                                busName.includes(searchQuery) ||
+                                                busNumber.includes(searchQuery) ||
+                                                busOrigin.includes(searchQuery) ||
+                                                busDestination.includes(searchQuery)
                                             );
-
-                                            // Append the row to the table body
-                                            tableBody.append(row);
                                         });
+
+                                        // Clear the current bus data and append the filtered bus data
+                                        $('.card-body').empty().append($filteredBusData);
                                     }
 
-                                    setInterval(updateBusLocations, 5000);
-
+                                    // Event listener for the search input
+                                    $searchInput.on('input', filterBusData);
 
                                 </script>
 

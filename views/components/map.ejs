@@ -19,23 +19,39 @@
                                         display: inline;
                                     }
 
-                                    .card-body{
+                                    .card-body {
                                         max-height: 600px;
                                         overflow: scroll;
+                                    }
+
+                                    .bus-container{
+                                        display: flex;
+                                        justify-content: center;
+                                        padding: 12px;
+                                        margin: 0 10px;
+                                        background: #fff;
+                                        border-radius: 24px;
+                                    }
+                                    .form{
+                                        padding: 0;
+                                    }
+
+                                    h3{
+                                        display: flex;
+                                        justify-content: space-between;
                                     }
                                 </style>
                                 <div class="container">
                                     <div class="alert alert-primary" role="alert">
-                                        <h2>Bus Tracking System - Map View</h2>
+                                        <h2>Map View</h2>
                                     </div>
                                     <div class="row justify-content-center">
-                                        <div id="map" class="col-lg-8 m-2 card"></div>
-                                        <div class="card m-2">
-                                            <div class="card-header">
-                                                <h3>
-                                                    Bus Live Status
+                                        <div id="map" class="col-lg-7 mt-2 card"></div>
+                                        <div class="bus-container mt-2 col-4">
+                                            <form class="form">
+                                                <h3 class="title">View Buses
                                                     <div class="dropdown d-inline float-end">
-                                                        <button class="btn btn-light dropdown-toggle" type="button"
+                                                        <button class="btn btn-secondary dropdown-toggle" type="button"
                                                             id="dropdownMenuButton" data-toggle="dropdown"
                                                             aria-haspopup="true" aria-expanded="false">
                                                             <i class="fas fa-info-circle"></i>
@@ -49,53 +65,68 @@
                                                                 <hr class="dropdown-divider">
                                                             </li>
                                                             <li><a class="dropdown-item" href="#">
-                                                                <span class="badge badge-primary">Ready or Live</span></a></li>
+                                                                    <span class="badge badge-primary">Ready or
+                                                                        Live</span></a></li>
                                                             <li><a class="dropdown-item" href="#">
-                                                                <span class="badge bg-warning">In Traffic</span></a></li>
+                                                                    <span class="badge bg-warning">In Traffic</span></a>
+                                                            </li>
                                                             <li><a class="dropdown-item" href="#">
-                                                                <span class="badge bg-success">Arrived</span></a></li>
+                                                                    <span class="badge bg-success">Arrived</span></a>
+                                                            </li>
                                                             <li><a class="dropdown-item" href="#">
-                                                                <span class="badge bg-danger">Stop</span></a></li>
+                                                                    <span class="badge bg-danger">Stop</span></a></li>
                                                         </ul>
                                                     </div>
                                                 </h3>
-                                            </div>
-                                            <div class="card-body">
-                                                <% busDetails.forEach((bus)=> { %>
-                                                    <div class="bus-details mb-3">
-                                                        <h4><i class="fas fa-bus"></i>
-                                                            <a href="/api/route-detail/<%= bus.bus_id %>">
-                                                                <%= bus.bus_name %>
-                                                            </a>
+
+                                                <!-- Search bar -->
+                                                <label>
+                                                    <input id="searchInput" required="" placeholder="" type="text"
+                                                        class="input">
+                                                    <span>Search for anything</span>
+                                                </label>
+                                                <!-- Search bar ends -->
+
+                                                <div class="card-body">
+                                                    <% busDetails.forEach((bus)=> { %>
+                                                        <div class="form-group">
+                                                            <h4><i class="fas fa-bus"></i>
+                                                                <a href="/api/route-detail/<%= bus.bus_id %>">
+                                                                    <%= bus.bus_name %>
+                                                                </a>
                                                                 <span class="pulse-icon <%= bus.status %>"></span>
-                                                        </h4>
-                                                        <ul>
-                                                            <li><strong>Bus ID:</strong>
-                                                                <%= bus.bus_id %>
-                                                            </li>
-                                                            <li><strong>Bus Number:</strong>
-                                                                <%= bus.bus_number %>
-                                                            </li>
-                                                            <li><strong>Bus Model:</strong>
-                                                                <%= bus.bus_model %>
-                                                            </li>
-                                                            <li><strong>Bus Origin:</strong>
-                                                                <%= bus.bus_origin %>
-                                                            </li>
-                                                            <li><strong>Currently at:</strong>
-                                                                <span class="badge badge-success">
-                                                                    <%= bus.current_stop %>
-                                                                </span>
-                                                            </li>
-                                                            <li><strong>Bus Destination:</strong>
-                                                                <%= bus.bus_destination %>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                    <% }); %>
-                                            </div>
+                                                            </h4>
+                                                            <ul>
+                                                                <li><strong>Bus ID:</strong>
+                                                                    <%= bus.bus_id %>
+                                                                </li>
+                                                                <li><strong>Bus Number:</strong>
+                                                                    <%= bus.bus_number %>
+                                                                </li>
+                                                                <li><strong>Bus Model:</strong>
+                                                                    <%= bus.bus_model %>
+                                                                </li>
+                                                                <li><strong>Bus Origin:</strong>
+                                                                    <%= bus.bus_origin %>
+                                                                </li>
+                                                                <li><strong>Currently at:</strong>
+                                                                    <span class="badge badge-success">
+                                                                        <%= bus.current_stop %>
+                                                                    </span>
+                                                                </li>
+                                                                <li><strong>Bus Destination:</strong>
+                                                                    <%= bus.bus_destination %>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                        <% }); %>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
+
+
+
                                 </div>
 
 
@@ -193,7 +224,7 @@
 
                                                 // Create the table row
                                                 var row = $('<div class="bus-details mb-3">').append(
-                                                    $('<h4><i class="fas fa-bus"></i> <a href="/api/route-detail/' + bus.bus_id+'">'+ bus.bus_name +'</a>' + busStatusBadge + '</h4>&nbsp;'),
+                                                    $('<h4><i class="fas fa-bus"></i> <a href="/api/route-detail/' + bus.bus_id + '">' + bus.bus_name + '</a>' + busStatusBadge + '</h4>&nbsp;'),
                                                     $('<ul>').append(
                                                         $('<li><strong>Bus ID:</strong> ' + bus.bus_id + '</li>'),
                                                         $('<li><strong>Bus Number:</strong> ' + bus.bus_number + '</li>'),
@@ -239,4 +270,35 @@
 
                                     loadMapScript();
 
+                                    // Get the search input element
+                                    const $searchInput = $('#searchInput');
+
+                                    // Store the original bus data order
+                                    const originalBusData = $('.form-group').clone();
+
+                                    // Function to filter the busData based on the search query
+                                    function filterBusData() {
+                                        const searchQuery = $searchInput.val().toLowerCase();
+
+                                        // Filter the original bus data based on the search query
+                                        const $filteredBusData = originalBusData.filter(function () {
+                                            const busName = $(this).find('.input').text().toLowerCase();
+                                            const busNumber = $(this).find('li:contains("Bus Number:")').text().toLowerCase();
+                                            const busOrigin = $(this).find('li:contains("Bus Origin:")').text().toLowerCase();
+                                            const busDestination = $(this).find('li:contains("Bus Destination:")').text().toLowerCase();
+
+                                            return (
+                                                busName.includes(searchQuery) ||
+                                                busNumber.includes(searchQuery) ||
+                                                busOrigin.includes(searchQuery) ||
+                                                busDestination.includes(searchQuery)
+                                            );
+                                        });
+
+                                        // Clear the current bus data and append the filtered bus data
+                                        $('.card-body').empty().append($filteredBusData);
+                                    }
+
+                                    // Event listener for the search input
+                                    $searchInput.on('input', filterBusData);
                                 </script>

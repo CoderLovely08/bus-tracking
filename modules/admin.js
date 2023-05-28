@@ -459,6 +459,27 @@ const getRouteDetailsByBusId = async (busId) => {
         return 0;
     }
 }
+
+const updateDriverBusDetails = async (updatedBusId, driverId) => {
+    try {
+        const query = {
+            text: `UPDATE DriverInfo SET bus_id = $1 WHERE driver_id = $2`,
+            values: [updatedBusId, driverId],
+        }
+
+        const { rowCount } = await pool.query(query);
+
+        if (rowCount == 1) {
+            return 0;
+        } else {
+            return 1;
+        }
+
+    } catch (error) {
+        console.log("Error in updateDriverBusDetails() call: ", error);
+        return 2;
+    }
+}
 module.exports = {
     // Add methods
     addNewAdmin,
@@ -487,4 +508,5 @@ module.exports = {
 
     // Update methods
     updateBusStops,
+    updateDriverBusDetails,
 }

@@ -55,6 +55,36 @@
         </div>
 
 
+        <!-- Modal -->
+        <div class="modal fade" id="updateDriverModal" tabindex="-1" aria-labelledby="updateDriverModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="updateDriverModalLabel">Update Driver</h5>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="mb-3">
+                                <label for="busId" class="form-label">Assign New Bus</label>
+                                <select class="form-control" name="select-bus" id="update-driver-bus">
+                                    <% for(let i=0; i< busData.length; i++) { %>
+                                        <option value="<%= busData[i].bus_id %>">
+                                            <%= busData[i].bus_name %>
+                                        </option>
+                                        <% } %>
+                                </select>
+                            </div>
+                            <button type="submit" id="update-bus-driver" class="btn btn-primary">Add</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
         <!-- Datatable CDN -->
         <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
         <script src="//cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
@@ -118,6 +148,9 @@
                                             <%= driverData[i].bus_number %>
                                         </td>
                                         <td>
+                                            <button id="update-driver-<%= driverData[i].driver_id %>"
+                                                class="updateDelete btn btn-success btn-sm"><i class="fa fa-pencil"
+                                                    aria-hidden="true"></i></button>
                                             <button id="delete-driver-<%= driverData[i].driver_id %>"
                                                 class="updateDelete btn btn-danger btn-sm"><i class="fa fa-trash"
                                                     aria-hidden="true"></i></button>
@@ -156,7 +189,7 @@
                 $(document).on('click', '#add-driver', function () {
                     let totalAvailableBuses = Array.isArray('<% busData %>') ? parseInt('<%= busData.length %>') : parseInt('<%= busData %>')
 
-                    if(totalAvailableBuses == 0 || totalAvailableBuses === NaN){
+                    if (totalAvailableBuses == 0 || totalAvailableBuses === NaN) {
                         alert("No Buses are available at the moment, add a new bus then only a driver can be added.");
                         return;
                     }
@@ -239,6 +272,41 @@
                                 }
                             })
                         }
+                    } else {
+                        $('#updateDriverModal').modal('toggle');
+                        $(document).on('click', '#update-bus-driver', function () {
+                            let updatedBusId = $('#update-driver-bus option:selected').val();
+                            let driverId = itemId[2];
+                            let confirmOption = confirm("Are you sure to update bus details for the selected driver?")
+                            if (confirmOption) {
+                                addLoadingSpinner();
+                                $.ajax({
+                                    type: 'PUT',
+                                    url: '',
+                                    data: {
+                                        updatedBusId: updatedBusId,
+                                        driverId: driverId,
+                                    },
+                                    success: function (response) {
+                                        
+                                        if (response.statusCode == 0) {
+                                            alert("Bus details updated for the selected driver!");
+                                            location.reload();
+                                        } else if (response.statusCode == 1) {
+                                            alert("Unable to update bus details");
+                                        } else {
+                                            alert("An error has occured, while updating bus details!");
+                                        }
+                                    },
+                                    error: function (error) {
+                                        alert("An unknown error has occured from the server!");
+                                    },
+                                    complete: function (status) {
+                                        removeLoadingSpinner();
+                                    }
+                                })
+                            }
+                        })
                     }
                 });
             });

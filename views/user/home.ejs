@@ -68,21 +68,31 @@
                         <div class="card">
                             <div class="profile-card col-12 ">
                                 <div class="profile-header">
-                                    <img src="/static/images/male.jpeg" alt="" class="rounded-circle m-2" style="width: 150px; height: 150px;">
-                                    <h2 class="profile-name"><%= userData.user_full_name %></h2>
+                                    <% let imageSrc=`/static/images/${userData.user_gender.toLowerCase()}.jpeg` %>
+                                        <img id="profile-img" src="<%= imageSrc %>" alt="" class="rounded-circle m-2"
+                                            style="width: 150px; height: 150px;">
+                                        <h2 class="profile-name">
+                                            <%= userData.user_full_name %>
+                                        </h2>
                                 </div>
                                 <div class="profile-details">
                                     <div class="profile-info">
                                         <label>Email:</label>
-                                        <span><%= userData.user_email %></span>
+                                        <span>
+                                            <%= userData.user_email %>
+                                        </span>
                                     </div>
                                     <div class="profile-info">
                                         <label>Gender:</label>
-                                        <span><%= userData.user_gender %></span>
+                                        <span>
+                                            <%= userData.user_gender %>
+                                        </span>
                                     </div>
                                     <div class="profile-info">
                                         <label>Date of Birth:</label>
-                                        <span><%= new Date(userData.user_dob).toDateString() %></span>
+                                        <span>
+                                            <%= new Date(userData.user_dob).toDateString() %>
+                                        </span>
                                     </div>
                                     <div class="profile-info">
                                         <label>Contact Number:</label>
@@ -129,3 +139,11 @@
                 </div>
             </div>
         </div>
+
+        <script>
+            $(document).ready(function () {
+                let gender = '<%= userData.user_gender %>'.toLowerCase();
+                let imageSrc = `/static/images/${gender}.jpeg`
+                $('#profile-img').attr('src', imageSrc);
+            })
+        </script>
