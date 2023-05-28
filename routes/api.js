@@ -27,7 +27,6 @@ router.route('/live-status')
 router.route('/get-live-status').get(async (req, res) => {
     try {
         const liveBusData = await adminModule.getLiveData();
-        console.log(liveBusData);
         const busDetails = await adminModule.getLiveBusDetails();
 
         // Create an array to store bus location data
@@ -66,7 +65,6 @@ router.route('/route-detail/:busId')
     .get(async (req, res) => {
         let busId = req.params.busId;
         const routeDetails = await adminModule.getRouteDetailsByBusId(busId);
-        console.log(routeDetails);
         if (routeDetails == 0) {
             res.send(`
             <script>alert("No intermediate routes are available kindly add an intermediate route from the rotes page.")</script>
@@ -85,8 +83,6 @@ router.route('/v1/route-detail/:busId')
         let busId = req.params.busId;
         const routeDetails = await adminModule.getRouteDetailsByBusId(busId);
 
-        // if (userType)
         res.json(routeDetails);
-        // else res.redirect('/')
     })
 module.exports = router;
