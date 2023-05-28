@@ -1,5 +1,5 @@
 /* Styling for the loading overlay */
-.loading-overlay {
+/* .loading-overlay {
   position: fixed;
   z-index: 99999;
   top: 0;
@@ -19,15 +19,15 @@
   border: 5px solid rgba(255, 255, 255, 0.5);
   border-top-color: #fff;
   animation: spin 1s ease-in-out infinite;
-}
+} */
 /* Loading overlay ends */
 
 /* Spinner animation starts */
-@keyframes spin {
+/* @keyframes spin {
   to {
     transform: rotate(360deg);
   }
-}
+} */
 /* Spinner animation ends */
 
 /* Body background */
