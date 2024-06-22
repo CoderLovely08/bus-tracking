@@ -4,6 +4,7 @@ const session = require('express-session');
 
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
 app.set('view engine', 'ejs');
 
@@ -55,7 +56,7 @@ app.get('/logout', (req, res) => {
 
 
 
-app.listen(3000, (error) => {
+app.listen(PORT, (error) => {
     if (error) console.log("Error has occured", error);
-    else console.log("Server is running on port 3000");
+    else console.log(`Server is running on port ${PORT}`);
 })
